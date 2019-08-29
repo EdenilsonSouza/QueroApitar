@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toast_container"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="#FFD700"
+    >
+    <ImageView android:src="@drawable/ic_twotone_wifi_24px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        />
+
+    <TextView
+        android:id="@+id/msg_erro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="sem sinal"
+        android:textAlignment="center"
+        android:textColor="#000" />
+</LinearLayout>

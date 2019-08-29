@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <LinearLayout
+        android:id="@+id/layoutcriarusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCriarUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Criar Usuário" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutalterarusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutcriarusuario"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAlterarUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alterar Usuário" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutremoverusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutalterarusuario"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnRemoverUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remover Usuário" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutcriarpartida"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutremoverusuario"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCriarPartida"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Criar Partida" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutmatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutcriarpartida"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnMatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Match" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layoutmatch">
+
+        <TextView
+            android:id="@+id/txtNomeUsuarioLogado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             />
+
+        <TextView
+            android:id="@+id/txtSenhaUsuarioLogado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+
+            />
+
+        <TextView
+            android:id="@+id/txtTipoUsuarioLogado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            />
+
+        <TextView
+            android:id="@+id/txtChaveUsuarioLogado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            />
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

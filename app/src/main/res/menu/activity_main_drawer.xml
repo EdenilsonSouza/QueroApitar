@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_twotone_home_flood"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_twotone_account_box_24px"
+            android:title="@string/menu_perfil" />
+        <item
+            android:id="@+id/nav_historico_partidas"
+            android:icon="@drawable/ic_twotone_history_24px"
+            android:title="@string/menu_historico_partidas" />
+        <item
+            android:id="@+id/nav_historico_arbitros"
+            android:icon="@drawable/ic_twotone_history_24px"
+            android:title="@string/menu_historico_arbitro" />
+
+    </group>
+
+    <item android:title="Configuração">
+        <menu>
+            <item
+                android:id="@+id/nav_configuracao"
+                android:icon="@drawable/ic_twotone_settings_24px"
+                android:title="@string/menu_configuracao" />
+            <item
+                android:id="@+id/nav_pagamento"
+                android:icon="@drawable/ic_twotone_payment_24px"
+                android:title="@string/menu_pagamento" />
+            <item
+                android:id="@+id/nav_sobre"
+                android:icon="@drawable/ic_twotone_info_24px"
+                android:title="@string/menu_sobre" />
+        </menu>
+    </item>
+
+    <item android:title="Compartilhar">
+        <menu>
+            <item
+                android:id="@+id/nav_indicar"
+                android:icon="@drawable/ic_twotone_share_24px"
+                android:title="@string/menu_indicar_amigos" />
+        </menu>
+    </item>
+
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_sair"
+                android:icon="@drawable/ic_twotone_exit_to_app_24px"
+                android:title="@string/menu_sair" />
+        </group>
+
+</menu>
