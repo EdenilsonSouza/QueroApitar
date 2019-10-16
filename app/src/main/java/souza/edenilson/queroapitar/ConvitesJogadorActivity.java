@@ -41,6 +41,7 @@ import souza.edenilson.Interface.ConviteJogadorRecyclerView_Interface;
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
 import souza.edenilson.MetodosPublicos.PermissoesAcesso;
 import souza.edenilson.Model.Convite;
+import souza.edenilson.Model.Partida;
 import souza.edenilson.Model.PartidaTemp;
 import souza.edenilson.Model.Usuario;
 
@@ -252,9 +253,14 @@ public class ConvitesJogadorActivity extends AppCompatActivity implements Convit
 
                 if(avaliacao > 5.0) avaliacao = 5.0;
                 arbitro.setAvaliacaoGeral(avaliacao);
-
                 usuarioDataBase.Atualizar(arbitro);
 
+                Partida p = convite.getPartida();
+                p.setStatusConvite(7);
+                partidaDataBase.Atualiza(p);
+
+                convite.setStatus(7);
+                convite.getPartida().setStatusConvite(7);
                 convite.setAvaliado(true);
                 convite.getConvidado().setAvaliacaoGeral(avaliacao);
                 convite.getPartida().setAvaliacaoArbitro((int)ratingBar.getRating());

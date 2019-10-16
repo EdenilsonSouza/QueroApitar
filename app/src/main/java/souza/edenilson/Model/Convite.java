@@ -12,7 +12,7 @@ public class Convite implements Serializable {
     private boolean Avaliado;
     private int Status;
     //  0 = iniciado  |  1 = aceito pelo Arbitro  |  2 = aguardando | 3 - não aceito pelo Arbitro |
-    // 4 - não aceito pelo Dono da Partida | 5 - Aceito pelo Dono da Partida | 6 - oferta do Arbitro | 7 - Data Passada
+    // 4 - não aceito pelo Dono da Partida | 5 - Aceito pelo Dono da Partida | 6 - oferta do Arbitro | 7 - Data Passada/ Finalizada
     private boolean Visualizado;
 
     public Convite() {

@@ -26,6 +26,7 @@ import souza.edenilson.Interface.ConviteJogadorRecyclerView_Interface;
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
 import souza.edenilson.MetodosPublicos.PermissoesAcesso;
 import souza.edenilson.Model.Convite;
+import souza.edenilson.Model.Partida;
 import souza.edenilson.Model.Usuario;
 import souza.edenilson.queroapitar.ConvitesArbitroActivity;
 import souza.edenilson.queroapitar.ConvitesJogadorActivity;
@@ -95,6 +96,11 @@ public class AdapterConvitesJogador extends RecyclerView.Adapter<AdapterConvites
                     txtAvaliarArbitro.setVisibility(View.VISIBLE);
                 }
                 //  ja passou a data da partida
+
+                Partida p = convite.getPartida();
+                p.setStatusConvite(7);
+                partidaDataBase.Atualiza(p);
+
                 convite.setStatus(7);
                 convite.getPartida().setStatusConvite(7);
                 conviteDataBase.Atualiza(convite, usuarioLogado, convitesJogadorActivity,"dataDaPartidaPassada");
@@ -201,14 +207,14 @@ public class AdapterConvitesJogador extends RecyclerView.Adapter<AdapterConvites
 
                         ConvitesJogadorActivity activity = (ConvitesJogadorActivity) contexto;
 
-                        conviteSelecionado.setStatus(5);
-
-                        conviteSelecionado.getPartida().setStatusConvite(5);
-                        partidaDataBase.Atualiza(conviteSelecionado.getPartida());
+                        Partida partida = conviteSelecionado.getPartida();
+                        partida.setStatusConvite(5);
+                        partidaDataBase.Atualiza(partida);
 
                         String nomeArbitro = conviteSelecionado.getConvidado().getNome().substring(0,1).toUpperCase() + conviteSelecionado.getConvidado().getNome().substring(1);
                         String sobreNomeArbitro = conviteSelecionado.getConvidado().getSobreNome().substring(0,1).toUpperCase() + conviteSelecionado.getConvidado().getSobreNome().substring(1);
-
+                        conviteSelecionado.setStatus(5);
+                        conviteSelecionado.getPartida().setStatusConvite(5);
                         conviteDataBase.Atualiza(conviteSelecionado, usuarioLogado, activity,"DonoDaPartidaAceitouArbitro");
 
                         Toast.makeText(AdapterConvitesJogador.this.contexto, "Você aceitou o árbitro " + nomeArbitro + " " +sobreNomeArbitro + " para apitar sua partida.", Toast.LENGTH_LONG).show();
@@ -236,12 +242,15 @@ public class AdapterConvitesJogador extends RecyclerView.Adapter<AdapterConvites
                     convite = mListaDeConvites.get(getLayoutPosition());
                     if(convite != null){
 
-                        convite.setStatus(5);
-                        convite.getPartida().setStatusConvite(5);
+                        Partida p = convite.getPartida();
+                        p.setStatusConvite(4);
+                        partidaDataBase.Atualiza(p);
 
                         String nomeArbitro = convite.getConvidado().getNome().substring(0,1).toUpperCase() + convite.getConvidado().getNome().substring(1);
                         String sobreNomeArbitro = convite.getConvidado().getSobreNome().substring(0,1).toUpperCase() + convite.getConvidado().getSobreNome().substring(1);
 
+                        convite.setStatus(4);
+                        convite.getPartida().setStatusConvite(5);
                         ConvitesJogadorActivity activity = (ConvitesJogadorActivity) contexto;
                         conviteDataBase.Atualiza(convite, usuarioLogado, activity,"DonoDaPartidaNaoAceitouArbitro");
 

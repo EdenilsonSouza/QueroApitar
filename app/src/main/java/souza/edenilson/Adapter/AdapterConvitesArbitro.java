@@ -39,6 +39,7 @@ public class AdapterConvitesArbitro extends RecyclerView.Adapter<AdapterConvites
 
     ConviteDataBase conviteDataBase;
     UsuarioDataBase usuarioDataBase;
+    PartidaDataBase partidaDataBase;
     Convite convite;
     public static ConviteArbitroRecyclerView_Interface clickConviteArbitroRecyclerViewInterface;
     Context context;
@@ -54,6 +55,7 @@ public class AdapterConvitesArbitro extends RecyclerView.Adapter<AdapterConvites
         usuarioLogado = _usuarioLogado;
         convitesArbitroActivity = activity;
         usuarioDataBase = new UsuarioDataBase();
+        partidaDataBase = new PartidaDataBase();
     }
 
     @NonNull
@@ -162,6 +164,10 @@ public class AdapterConvitesArbitro extends RecyclerView.Adapter<AdapterConvites
                         usuarioLogado.setQuantidadePartidas(partidasApitadas + 1);
                         usuarioDataBase.Atualizar(usuarioLogado); // atualiza a quantidade de partidas apitadas.
 
+                        Partida partida = convite.getPartida();
+                        partida.setStatusConvite(1);
+                        partidaDataBase.Atualiza(partida);
+
                         convite.setStatus(1);
                         convite.getPartida().setStatusConvite(1);
                         conviteDataBase.Atualiza(convite, usuarioLogado, convitesArbitroActivity, "arbitroRespondeJogador");
@@ -194,6 +200,11 @@ public class AdapterConvitesArbitro extends RecyclerView.Adapter<AdapterConvites
                         String sobreNomeDonoPartida = convite.getRemetente().getSobreNome().substring(0,1).toUpperCase() + convite.getRemetente().getSobreNome().substring(1);
 
                         ConvitesArbitroActivity activity = (ConvitesArbitroActivity) context;
+
+                        Partida partida = convite.getPartida();
+                        partida.setStatusConvite(3);
+                        partidaDataBase.Atualiza(partida);
+
                         convite.setStatus(3);
                         convite.getPartida().setStatusConvite(3);
                         conviteDataBase.Atualiza(convite, usuarioLogado, convitesArbitroActivity, "arbitroRespondeJogador");

@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity
         if(usuario != null && usuario.getTipoDeUsuario() == 2){  // ENTRA AQUI SE FOR JOGADOR
             this.setTitle(TITULO_ARBITRO);
 
+            // mostra a lista de arbitros para o jogador
             PreencheListaDeArbitros();
 
             fab.bringToFront();
@@ -187,6 +188,8 @@ public class MainActivity extends AppCompatActivity
              // ENTRA AQUI SE FOR ARBITRO
             fab.hide();
             this.setTitle(TITULO_JOGADOR);
+
+            //mostra a lista de partidas para o arbitro se candidatar
             PreencheListaDePartidas();
         }
 
@@ -545,6 +548,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    // mostra a lista de arbitros disponivel para o jogador;
     private void PreencheListaDeArbitros(){
 
         databaseReferenceUsuario = firebaseDatabase.getReference("usuario");
@@ -638,14 +642,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // preenche a lista de arbitros disponiveis.
     private void PopulaRecyclerViewArbitros(){
         adapterPartidasArbitros = new AdapterPartidasArbitros(this, listaDeArbitros, this);
         recyclerViewListas.setAdapter(adapterPartidasArbitros);
 
         if(listaDeArbitros.size() > 0){
-            txt_sem_registro.setText("Clique na linha para se candidar a partida.");
-            txt_sem_registro.setVisibility(View.VISIBLE);
-        }else{
+           // txt_sem_registro.setText("Clique na linha para se candidar a partida.");
             txt_sem_registro.setVisibility(View.GONE);
         }
     }

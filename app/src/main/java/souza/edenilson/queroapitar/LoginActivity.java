@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
 
-
+    ProgressBar progressBar;
     EditText editEmail;
     EditText editSenha;
     Button btnLogar;
@@ -67,22 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         App.setContext(this);
         metodosPublicos = new MetodosPublicos();
 
-      //  metodosPublicos.TemInternet(App.getContext(), LoginActivity.this, LoginActivity.class);
-    //    hideSystemUI();
-
-        /*
-        ConnectivityManager manager =  (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
-        boolean conectado = info != null && info.isConnected();
-
-        if(!conectado){
-            App.getContext().startService(new Intent(App.getContext(), AccessInternetService.class));
-            Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-            startActivity(intent);
-           // onBackPressed();
-        }
-*/
-
         InicializaFirebase();
         InicializaCampos();
         ConfiguraRadioGroup();
@@ -90,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void InicializaFirebase(){
         mAuth = FirebaseAuth.getInstance();
-        //firebaseFirestore = FirebaseFirestore.getInstance();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference(COLLECTION_NAME);
@@ -108,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void InicializaCampos(){
+        progressBar = (ProgressBar) findViewById(R.id.pBar);
         editEmail = (EditText) findViewById(R.id.edit_email_usuario);
         editSenha = (EditText) findViewById(R.id.edit_senha_usuario);
         btnLogar = (Button) findViewById(R.id.btn_logar);
@@ -219,8 +204,11 @@ public class LoginActivity extends AppCompatActivity {
     public void SignIn(String email, final String senha, final String tipoDeUsuario){
         mAuth.signInWithEmailAndPassword(email, senha)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
 
                             currentUser = mAuth.getCurrentUser();
@@ -271,6 +259,8 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
+
+                            progressBar.setVisibility(View.GONE);
                         }
 
                         if(task.isCanceled()){
