@@ -3,6 +3,7 @@
     package="souza.edenilson.queroapitar">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +14,7 @@
     <uses-permission android:name="android.permission.PERMISSION_GRANTED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.TELEPHONY_SERVICE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
@@ -24,10 +26,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <receiver android:name="souza.edenilson.Receiver.SmsReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCkcZQnmrb6nIMjV8fvnO0DIbOBcmI29-I" />
+
         <service
             android:name="souza.edenilson.Services.AccessInternetService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <receiver
             android:name="souza.edenilson.Receiver.InternetReceiver"
@@ -44,15 +57,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PerfilUsuarioActivity" />
-        <activity android:name=".SobreActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".PerfilUsuarioActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SobreActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CriarContaActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PartidaActivity"
             android:screenOrientation="portrait" />
@@ -64,6 +80,18 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".HistoricoPartidasArbitroActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".HistoricoPartidasJogadorActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ConvitesArbitroActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ConvitesJogadorActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

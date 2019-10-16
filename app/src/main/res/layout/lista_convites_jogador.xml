@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#E0EEEE">
+
+    <LinearLayout
+        android:id="@+id/linear_conteudo_historico_convites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/estilo_recyclerview"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/img_historico_convites_perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="82dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="3dp"
+                android:paddingTop="10dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/account"/>
+
+            <TextView
+                android:id="@+id/txt_status_convite_jogador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:text="STATUS"
+                android:layout_alignParentTop="true"
+                android:textAlignment="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp"
+                />
+
+            <TextView
+                android:id="@+id/txt_historico_nome_remetente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:textAlignment="textStart"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp"
+                android:text="REMETENTE"
+                android:layout_below="@+id/txt_status_convite_jogador"/>
+
+            <TextView
+                android:id="@+id/txt_historico_nome_convidado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_historico_nome_remetente"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:textAlignment="textStart"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp"
+                android:text="CONVIDADO" />
+
+            <TextView
+                android:id="@+id/txt_historico_esporte_convite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_historico_nome_convidado"
+                android:text="ESPORTE"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp" />
+
+            <TextView
+                android:id="@+id/txt_historico_data_da_partida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_historico_esporte_convite"
+                android:text="DATA"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp" />
+
+            <TextView
+                android:id="@+id/txt_historico_endereco_da_partida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_historico_data_da_partida"
+                android:text="ENDERECO"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="87dp"
+                android:layout_marginRight="55dp"
+                android:layout_marginBottom="3dp"/>
+
+
+            <RelativeLayout
+                android:id="@+id/relative_btn_avaliar"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="9dp"
+                android:layout_marginLeft="2dp"
+                android:gravity="right">
+
+                <Button
+                    android:id="@+id/btn_avaliar_arbitro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:background="#F0FFFF"
+                    android:visibility="gone"
+                    android:drawableLeft="@drawable/ic_avaliacao_total_24px"
+                    android:clickable="false"
+                    android:paddingLeft="11dp" />
+
+                <TextView
+                    android:id="@+id/txt_avaliar_arbitro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btn_avaliar_arbitro"
+                    android:visibility="gone"
+                    android:textSize="8dp"
+                    android:textAlignment="center"
+                    android:clickable="false"
+                    android:text="Avaliar"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_btn_aceitar"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="3dp"
+                android:layout_alignParentRight="true">
+
+                <LinearLayout
+                    android:id="@+id/linear_btn_aceitar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btn_aceitar_pedido_do_arbitro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="#FF9800"
+                        android:drawableLeft="@drawable/ic_done_24px"
+                        android:layout_marginTop="1dp"
+                        android:paddingLeft="18dp"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:onClick="AceitarPedidoArbitro_click"
+                        android:layout_alignParentTop="true"/>
+
+                    <TextView
+                        android:id="@+id/txt_aceitar_pedido_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:textSize="8dp"
+                        android:textAlignment="center"
+                        android:clickable="false"
+                        android:text="Aceitar Árbitro"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/linear_btn_aceitar">
+
+                    <Button
+                        android:id="@+id/btn_nao_aceitar_pedido_arbitro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="#FF6347"
+                        android:drawableLeft="@drawable/ic_cancel_24px"
+                        android:layout_marginTop="2dp"
+                        android:paddingLeft="18dp"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:longClickable="true"
+                        android:onClick="NãoAceitarPedidoArbitro_click"
+                        android:layout_alignParentBottom="true"/>
+
+                    <TextView
+                        android:id="@+id/txt_nao_aceitar_pedido_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:textSize="8dp"
+                        android:textAlignment="center"
+                        android:clickable="false"
+                        android:text="Não aceitar Arbitro"/>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout> <!-- linear_conteudo_convites -->
+
+</LinearLayout>

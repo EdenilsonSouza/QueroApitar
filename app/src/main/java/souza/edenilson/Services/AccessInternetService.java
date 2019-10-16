@@ -23,9 +23,9 @@ public class AccessInternetService extends Service implements Runnable{
     View view;
     private Handler handler = new Handler();
     long TIMER = 1500;
-    String MENSAGEM = "Sem conexão, verifique o sinal de internet.";
+    String MENSAGEM = "Sem conexão de internet, verifique o sinal.";
 
-    AccessInternetService(){}
+    public AccessInternetService(){}
 
     @Nullable
     @Override
@@ -59,7 +59,7 @@ public class AccessInternetService extends Service implements Runnable{
         super.onDestroy();
     }
 
-    void isConectado(){
+    public void isConectado(){
         if(!receiverInternet.verificaInternet(App.getContext())){
 
             TextView texto = (TextView) view.findViewById(R.id.msg_erro);
@@ -70,6 +70,21 @@ public class AccessInternetService extends Service implements Runnable{
             toast.show();
         }
     }
+
+    public boolean Conectado(){
+        if(!receiverInternet.verificaInternet(App.getContext())){
+
+            TextView texto = (TextView) view.findViewById(R.id.msg_erro);
+            Toast toast = Toast.makeText(this, MENSAGEM, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP , 0, 0);
+            texto.setText(MENSAGEM);
+            toast.setView(view);
+            toast.show();
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     public void run() {

@@ -16,18 +16,66 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <TextView
+                android:id="@+id/txt_contador_convites"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="3dp"
+                android:textColor="#FF00"/>
+
+            <Button
+                android:id="@+id/btn_meus_convites"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/estilo_btn_salvar_partida"
+                android:drawableLeft="@drawable/ic_email_outlined_24px"
+                android:layout_gravity="right"
+                android:paddingLeft="18dp"
+                android:longClickable="true"
+                android:tooltipText="Meus convites."
+                android:onClick="AbreMeusConvites_click"
+                />
+
+            <Button
+                android:id="@+id/btn_minhas_partidas"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/estilo_btn_salvar_partida"
+                android:drawableLeft="@drawable/ic_twotone_history_branco_24px"
+                android:layout_gravity="right"
+                android:paddingLeft="8dp"
+                android:longClickable="true"
+                android:tooltipText="Histórico de Partidas."
+                android:onClick="AbreMinhasPartidas_click"
+                 />
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddPartida"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_twotone_add_circle_outline_24px" />
+        android:gravity="bottom|end">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddPartida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            android:src="@drawable/apito"
+            app:backgroundTint="#FF9800"
+            app:layout_anchorGravity="bottom|center" />
+
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,10 +1,12 @@
 package souza.edenilson.Model;
 
-public class Endereco {
+import java.io.Serializable;
+
+public class Endereco implements Serializable {
 /*
     id,  logradouro,  numero,  bairro,  cidade,  estado , pais  */
 
-    private int ID;
+    private String ID;
     private String Logradouro;
     private String Numero;
     private String Bairro;
@@ -13,9 +15,14 @@ public class Endereco {
     private int CodigoEstado;
     private String Estado;
     private int Pais = 1;
+    private String CEP;
+    private double Latitude;
+    private double Longitude;
 
-    public Endereco(int ID, String logradouro, String numero, String bairro, String cidade, int codigoCidade, int codigoEstado, String estado, int pais) {
-        this.ID = ID;
+    public Endereco() {}
+
+    public Endereco(String logradouro, String numero, String bairro, String cidade, int codigoCidade,
+                    int codigoEstado, String estado, int pais, String cep, double latitude, double longitude) {
         Logradouro = logradouro;
         Numero = numero;
         Bairro = bairro;
@@ -24,13 +31,16 @@ public class Endereco {
         CodigoEstado = codigoEstado;
         Estado = estado;
         Pais = pais;
+        CEP = cep;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -97,4 +107,29 @@ public class Endereco {
     public void setPais(int pais) {
         Pais = pais;
     }
+
+    public String getCEP() {
+        return CEP;
+    }
+
+    public void setCEP(String CEP) {
+        this.CEP = CEP;
+    }
+
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        Latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        Longitude = longitude;
+    }
+
 }

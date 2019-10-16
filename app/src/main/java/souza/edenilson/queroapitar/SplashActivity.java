@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,8 @@ import java.util.regex.Pattern;
 
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
 import souza.edenilson.Model.Usuario;
+import souza.edenilson.Receiver.InternetReceiver;
+import souza.edenilson.Services.AccessInternetService;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -34,32 +37,32 @@ public class SplashActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
 
+    InternetReceiver internetReceiver;
     Usuario usuario;
-    Usuario usuarioBanco;
     String email,uid,senha,tipoDeUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
         App.setContext(this);
         metodosPublicos = new MetodosPublicos();
+
+        // se esta conectado retorna TRUE
+        metodosPublicos.TemInternet(App.getContext(), SplashActivity.this, LoginActivity.class);
+
         InicializaFirebase();
 
-        currentUser = mAuth.getCurrentUser();
+        if(mAuth != null)
+            currentUser = mAuth.getCurrentUser();
 
         if(currentUser == null){
 
-            new Handler().postDelayed(new Runnable(){
-                @Override
-                public void run() {
-                    Intent criarContaIntent = new Intent(SplashActivity.this,CriarContaActivity.class);
-                    startActivity(criarContaIntent);
-                  //  finish();
-                }
-            }, SPLASH_DISPLAY_LENGTH);
-
+            Intent criarContaIntent = new Intent(SplashActivity.this,CriarContaActivity.class);
+            startActivity(criarContaIntent);
+            finish();
 
         }else{
             email = currentUser.getEmail();
@@ -108,8 +111,8 @@ public class SplashActivity extends AppCompatActivity {
         final String userID = user.getID();
         final String userEmail = user.getEmail();
 
-        databaseReference =  firebaseDatabase.getInstance().getReference("usuario").child(userID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference =  firebaseDatabase.getReference("usuario");
+        databaseReference.child(userID).addValueEventListener(new ValueEventListener() {
             String email = "";
             String senha ="";
             String nome = "";
@@ -121,14 +124,16 @@ public class SplashActivity extends AppCompatActivity {
 
                 String key = dataSnapshot.getKey(); // pega a chave do OBJETO Usuario
                 if(dataSnapshot.exists()){
-                    email = dataSnapshot.getValue(Usuario.class).getEmail();
-                    if(dataSnapshot.exists() && key.equals(userID) && userEmail.equals(email)){
+                    Usuario usuarioBanco = dataSnapshot.getValue(Usuario.class);
+                    String mail = usuarioBanco.getEmail();
+                    if(dataSnapshot.exists() && key.equals(userID)&& userEmail.equals(mail)){
 
                         email = dataSnapshot.getValue(Usuario.class).getEmail();
                         tipo = dataSnapshot.getValue(Usuario.class).getTipoDeUsuario();
                         senha = dataSnapshot.getValue(Usuario.class).getSenha();
                         nome = dataSnapshot.getValue(Usuario.class).getNome();
                         sobrenome = dataSnapshot.getValue(Usuario.class).getSobreNome();
+
 
                         usuarioBanco = dataSnapshot.getValue(Usuario.class);
                         usuarioBanco.setID(key);
@@ -165,7 +170,7 @@ public class SplashActivity extends AppCompatActivity {
     private void InicializaFirebase(){
         mAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getInstance().getReference("usuario");
+        databaseReference = firebaseDatabase.getReference("usuario");
     }
 
 }

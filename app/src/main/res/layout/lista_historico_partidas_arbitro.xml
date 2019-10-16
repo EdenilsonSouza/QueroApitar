@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/container_partidas_historico_arbitro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/estilo_recyclerview"
+        >
+
+        <LinearLayout
+            android:id="@+id/linear_itenslistas_partidas_historico_arbitro"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearStatusPartidaArbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_status_partida_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="STATUS"
+                        android:textColor="#000"
+                        android:textSize="10dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearDonoDaPartida_historico_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:id="@+id/linear_dono_partida_historico_arbitro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_dono_da_partida_historico_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dono da Partida"
+                        android:textColor="#000"
+                        android:textSize="10dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearArbitro_historico_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:id="@+id/linear_arbitro_da_partida_historico_arbitro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_arbitro_da_partida_historico_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Arbitro"
+                        android:textColor="#000"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearTipoEsporte_historico_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/linear_tipo_de_esporte_historico_arbitro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_esporte_historico_arbitro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo de Esporte"
+                        android:textColor="#000"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="270dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp">
+
+                    <TextView
+                        android:id="@+id/txt_data_partida_historico_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="12dp"
+                        android:text="Data da Partida"
+                        android:textAlignment="viewEnd"
+                        android:textColor="#000"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearEnderecoPartida_historico_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/linear_dono_partida"
+                    android:layout_weight="6"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="3dp"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_endereco_partida_historico_arbitro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_two_tone_mapa"
+                        android:paddingTop="5dp"
+                        android:text="Endereco da Partida"
+                        android:textColor="#000"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout> <!-- FIM DO ITENS DA LISTA -->
+
+    </LinearLayout> <!-- FIM DO CONTAINER -->
+
+</RelativeLayout>

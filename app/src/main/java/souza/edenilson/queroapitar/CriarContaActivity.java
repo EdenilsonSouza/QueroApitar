@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import souza.edenilson.DataBase.UsuarioDataBase;
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
 import souza.edenilson.Model.Usuario;
 import souza.edenilson.Receiver.InternetReceiver;
@@ -52,9 +54,6 @@ public class CriarContaActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
 
-    Usuario usuario;
-    InternetReceiver internetReceiver;
-
     private EditText editEmail;
     private EditText editNome;
     private EditText editSobrenome;
@@ -65,20 +64,45 @@ public class CriarContaActivity extends AppCompatActivity {
     private RadioGroup radioGroupTipoUsuario;
     private RadioButton radioArbitro, radioJogador;
 
+    // OBJETOS
+    Usuario usuario;
+    InternetReceiver internetReceiver;
     MetodosPublicos metodosPublicos;
+    UsuarioDataBase usuarioDataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         setContentView(R.layout.activity_criar_conta);
 
         App.setContext(this);
+        metodosPublicos = new MetodosPublicos();
+        metodosPublicos.TemInternet(App.getContext(), CriarContaActivity.this, LoginActivity.class);
 
-        verificaSinalInternetLoad();
         InicializaFirebase();
+        InicializaObjetos();
         InicializaCampos();
         ConfiguraRadioButton();
-        metodosPublicos = new MetodosPublicos();
+
+    }
+
+    @Override
+    protected void onStart() {
+        metodosPublicos.TemInternet(App.getContext(), CriarContaActivity.this, LoginActivity.class );
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        metodosPublicos.TemInternet(App.getContext(), CriarContaActivity.this, LoginActivity.class );
+        super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        mAuth.signOut();
+        this.finish();
     }
 
     private void ConfiguraRadioButton(){
@@ -104,6 +128,11 @@ public class CriarContaActivity extends AppCompatActivity {
         });
     }
 
+    private void InicializaObjetos(){
+        metodosPublicos = new MetodosPublicos();
+        usuarioDataBase = new UsuarioDataBase();
+    }
+
     private void InicializaCampos(){
         editEmail = (EditText) findViewById(R.id.editEmail);
         editNome = (EditText) findViewById(R.id.editNome);
@@ -120,7 +149,6 @@ public class CriarContaActivity extends AppCompatActivity {
     private void InicializaFirebase(){
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("usuario");
     }
@@ -230,13 +258,13 @@ public class CriarContaActivity extends AppCompatActivity {
     public boolean CriarConta(){
          boolean logado = false;
 
-        String email = editEmail.getText().toString();
-        final String senha = editSenha.getText().toString();
-        final String nome = editNome.getText().toString();
-        final String sobrenome = editSobrenome.getText().toString();
+        String EmailLogin = editEmail.getText().toString();
+        final String Senha = editSenha.getText().toString();
+        final String Nome = editNome.getText().toString();
+        final String SobreNome = editSobrenome.getText().toString();
         final int tipoDeUsuarioLogado = GetValueRadioButtonTipoUsuarioSelecionado();
 
-        mAuth.createUserWithEmailAndPassword(email, senha)
+        mAuth.createUserWithEmailAndPassword(EmailLogin, Senha)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -244,17 +272,19 @@ public class CriarContaActivity extends AppCompatActivity {
 
                             currentUser = mAuth.getCurrentUser();
                             String displayName = currentUser.getDisplayName();
-                            String emailUser = currentUser.getEmail();
+                            String Email = currentUser.getEmail();
                             Uri photoUrl = currentUser.getPhotoUrl();
                             String phoneNumber = currentUser.getPhoneNumber();
                             String uid = currentUser.getUid();
                             String proveiderID = currentUser.getProviderId();
                             boolean isEmailVerified = currentUser.isEmailVerified();
-                            String dataComHora = metodosPublicos.GetDataEHora(new Date());
+                            String DataDeCadastro = metodosPublicos.GetDataEHora(new Date());
+                            boolean Disponivel = true;
+                            String UserName = Nome;
 
-                            usuario = new Usuario(uid, emailUser, nome, sobrenome, senha, tipoDeUsuarioLogado, dataComHora);
-
-                            databaseReference.child(currentUser.getUid()).setValue(usuario);
+                            usuario = new Usuario(uid,Nome, SobreNome, Email,  Senha, UserName, "",
+                                    "", "", DataDeCadastro,tipoDeUsuarioLogado, null, 0, Disponivel, 0, 0.0, null);
+                            usuarioDataBase.Salvar(usuario);
 
                             LimparCampos();
                             Intent intent = new Intent(CriarContaActivity.this, MainActivity.class);
@@ -308,10 +338,6 @@ public class CriarContaActivity extends AppCompatActivity {
         return internetReceiver.verificaInternet(App.getContext());
         // chama o service que verifica se há Conexão com a Internet
         //App.getContext().startService(new Intent(App.getContext(), AccessInternetService.class));
-    }
-
-    private void verificaSinalInternetLoad(){
-        App.getContext().startService(new Intent(App.getContext(), AccessInternetService.class));
     }
 
 }

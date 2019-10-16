@@ -4,126 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E0EEEE"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
-        android:id="@+id/layoutcriarusuario"
+        android:id="@+id/linear_sem_resgitros_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="3dp">
 
-        <Button
-            android:id="@+id/btnCriarUsuario"
+        <TextView
+            android:id="@+id/txt_sem_registro_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Criar Usuário" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutalterarusuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutcriarusuario"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnAlterarUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Alterar Usuário" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutremoverusuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutalterarusuario"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnRemoverUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Remover Usuário" />
+            android:background="#E0EEEE"
+            android:textSize="12dp"
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:text="Não há registros."/>
 
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/layoutcriarpartida"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layoutremoverusuario"
-        android:orientation="horizontal">
+        android:tooltipText="Atualizando..."
+        android:layout_below="@+id/linear_sem_resgitros_main">
 
-        <Button
-            android:id="@+id/btnCriarPartida"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Criar Partida" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutmatch"
+        <!-- ESSA RECYCLERVIEW SERVE PARA OS DOIS TIPOS DE USUARIOS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_listas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutcriarpartida"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnMatch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Match" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#E0EEEE"
+        android:clipToPadding="false"
+        android:elevation="0dp"
         android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        android:layout_below="@+id/layoutmatch">
+        android:paddingBottom="80dp" />
 
-        <TextView
-            android:id="@+id/txtNomeUsuarioLogado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             />
-
-        <TextView
-            android:id="@+id/txtSenhaUsuarioLogado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-
-            />
-
-        <TextView
-            android:id="@+id/txtTipoUsuarioLogado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            />
-
-        <TextView
-            android:id="@+id/txtChaveUsuarioLogado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            />
-
-    </LinearLayout>
-
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

@@ -6,116 +6,58 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @IgnoreExtraProperties
 public class Usuario implements Serializable {
 
    private String ID;
-   private String Senha;
-   private String Email;
    private String Nome;
    private String SobreNome;
+   private String Email;
+   private String Senha;
    private String UserName;
-   private Date DataDeNascimento;
+   private String DataDeNascimento;
    private String UrlFoto;
    private String Genero;
-   private int TipoDeUsuario; /*tipo:{1 - arbitro, 2 - jogador, 3 - clubes}*/
-   private int Endereco;
    private String DataDeCadastro;
+   private int TipoDeUsuario; /*tipo:{1 - arbitro, 2 - jogador, 3 - clubes}*/
+   private Endereco Endereco;
+   private int DistanciaDisponivel;
+   private boolean Disponivel;
+   private int QuantidadePartidas;
+   private double AvaliacaoGeral;
+   private List<Esporte> ListaDeEsportes;
 
     public Usuario() {
     }
 
-    public Usuario(String id, String email){
+    public Usuario(String id, String email) {
         ID = id;
         Email = email;
     }
 
-    public Usuario(String id, String email, String senha, int tipoDeUsuario){
+    public Usuario(String id, String nome, String sobreNome, String email, String senha, String userName,
+                   String dataDeNascimento, String urlFoto, String genero, String dataDeCadastro,
+                   int tipoDeUsuario, Endereco endereco, int distanciaDisponivel, boolean disponivel, int quantidadePartidas, double avaliacaoGeral, List<Esporte> listaDeEsportes ) {
         ID = id;
-        Email = email;
-        Senha = senha;
-        TipoDeUsuario = tipoDeUsuario;
-    }
-
-    public Usuario(String id, String email, String nome,String sobrenome,String senha, int tipoDeUsuario, String dataDeCadastro){
-        ID = id;
-        Email = email;
-        Senha = senha;
-        Nome = nome;
-        SobreNome = sobrenome;
-        TipoDeUsuario = tipoDeUsuario;
-        DataDeCadastro = dataDeCadastro;
-    }
-
-    public Usuario(String id, String email, String senha, int tipoDeUsuario, String urlFoto){
-        ID = id;
-        Email = email;
-        Senha = senha;
-        TipoDeUsuario = tipoDeUsuario;
-        UrlFoto = urlFoto;
-    }
-
-    public Usuario(String senha, String email, String nome, String sobreNome, String userName, Date dataDeNascimento, String genero, int tipoDeUsuario, int endereco, String dataDeCadastro) {
-        Senha = senha;
-        Email = email;
         Nome = nome;
         SobreNome = sobreNome;
+        Email = email;
+        Senha = senha;
         UserName = userName;
         DataDeNascimento = dataDeNascimento;
+        UrlFoto = urlFoto;
         Genero = genero;
+        DataDeCadastro = dataDeCadastro;
         TipoDeUsuario = tipoDeUsuario;
         Endereco = endereco;
-        DataDeCadastro = dataDeCadastro;
-    }
-
-    // este metodo faz o mapeamento estre o objeto e o firebase.
-    @Exclude
-    public Map<String, Object> UsuarioToMap(Usuario user) {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("Email", user.getEmail());
-        result.put("Senha", user.getSenha());
-        result.put("Nome", user.getNome());
-        result.put("SobreNome", user.getSobreNome());
-        result.put("UserName", user.getUserName());
-        result.put("DataDeNascimento", user.getDataDeNascimento());
-        result.put("Genero", user.getGenero());
-        result.put("Endereco", user.getEndereco());
-        result.put("DataDeCadastro", user.getDataDeCadastro());
-        result.put("TipoDeUsuario", user.getTipoDeUsuario());
-        return result;
-    }
-
-    public DatabaseReference AdicionaUsuario(){
-        DatabaseReference usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios");
-        usuariosRef.setValue(this);
-        return usuariosRef;
-    }
-
-    public void AtualizaUsuario(){
-        DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference("usuarios");
-
-        Map objeto = new HashMap();
-        objeto.put("/usuarios/" + getNome() + "/nome", getNome() );
-        objeto.put("/usuarios/" + getEmail() + "/email", getEmail() );
-        objeto.put("/usuarios/" + getSenha() + "/senha", getSenha() );
-        objeto.put("/usuarios/" + getSobreNome() + "/sobrenome", getSobreNome() );
-        objeto.put("/usuarios/" + getUserName() + "/username", getUserName() );
-        objeto.put("/usuarios/" + getDataDeNascimento() + "/datadenascimento", getDataDeNascimento() );
-        objeto.put("/usuarios/" + getGenero() + "/genero", getGenero() );
-        objeto.put("/usuarios/" + getTipoDeUsuario() + "/tipodeusuario", getTipoDeUsuario() );
-        objeto.put("/usuarios/" + getEndereco() + "/endereco", getEndereco() );
-        objeto.put("/usuarios/" + getDataDeCadastro() + "/datadecadastro", getDataDeCadastro() );
-
-        firebaseRef.updateChildren( objeto );
-    }
-
-    public void RemoveUsuario(String id){
-        DatabaseReference uR = FirebaseDatabase.getInstance().getReference("usuarios").child(id);
-        uR.removeValue();
+        DistanciaDisponivel = distanciaDisponivel;
+        Disponivel = disponivel;
+        QuantidadePartidas = quantidadePartidas;
+        AvaliacaoGeral = avaliacaoGeral;
+        ListaDeEsportes = listaDeEsportes;
     }
 
     public String getID() {
@@ -166,11 +108,11 @@ public class Usuario implements Serializable {
         UserName = userName;
     }
 
-    public Date getDataDeNascimento() {
+    public String getDataDeNascimento() {
         return DataDeNascimento;
     }
 
-    public void setDataDeNascimento(Date dataDeNascimento) {
+    public void setDataDeNascimento(String dataDeNascimento) {
         DataDeNascimento = dataDeNascimento;
     }
 
@@ -190,11 +132,11 @@ public class Usuario implements Serializable {
         TipoDeUsuario = tipoDeUsuario;
     }
 
-    public int getEndereco() {
+    public Endereco getEndereco() {
         return Endereco;
     }
 
-    public void setEndereco(int endereco) {
+    public void setEndereco(Endereco endereco) {
         Endereco = endereco;
     }
 
@@ -212,5 +154,45 @@ public class Usuario implements Serializable {
 
     public void setUrlFoto(String urlFoto) {
         UrlFoto = urlFoto;
+    }
+
+    public int getDistanciaDisponivel() {
+        return DistanciaDisponivel;
+    }
+
+    public void setDistanciaDisponivel(int distanciaDisponivel) {
+        DistanciaDisponivel = distanciaDisponivel;
+    }
+
+    public boolean isDisponivel() {
+        return Disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        Disponivel = disponivel;
+    }
+
+    public int getQuantidadePartidas() {
+        return QuantidadePartidas;
+    }
+
+    public void setQuantidadePartidas(int quantidadePartidas) {
+        QuantidadePartidas = quantidadePartidas;
+    }
+
+    public double getAvaliacaoGeral() {
+        return AvaliacaoGeral;
+    }
+
+    public void setAvaliacaoGeral(double avaliacaoGeral) {
+        AvaliacaoGeral = avaliacaoGeral;
+    }
+
+    public List<Esporte> getListaDeEsportes() {
+        return ListaDeEsportes;
+    }
+
+    public void setListaDeEsportes(List<Esporte> listaDeEsportes) {
+        ListaDeEsportes = listaDeEsportes;
     }
 }

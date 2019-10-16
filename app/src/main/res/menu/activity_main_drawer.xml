@@ -12,34 +12,36 @@
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_twotone_account_box_24px"
             android:title="@string/menu_perfil" />
+
+        <!--
         <item
             android:id="@+id/nav_historico_partidas"
             android:icon="@drawable/ic_twotone_history_24px"
             android:title="@string/menu_historico_partidas" />
-        <item
-            android:id="@+id/nav_historico_arbitros"
-            android:icon="@drawable/ic_twotone_history_24px"
-            android:title="@string/menu_historico_arbitro" />
+-->
+
 
     </group>
 
-    <item android:title="Configuração">
-        <menu>
+    <group android:checkableBehavior="single">
             <item
                 android:id="@+id/nav_configuracao"
                 android:icon="@drawable/ic_twotone_settings_24px"
                 android:title="@string/menu_configuracao" />
+
+        <!--
             <item
                 android:id="@+id/nav_pagamento"
                 android:icon="@drawable/ic_twotone_payment_24px"
                 android:title="@string/menu_pagamento" />
+-->
+
             <item
                 android:id="@+id/nav_sobre"
                 android:icon="@drawable/ic_twotone_info_24px"
                 android:title="@string/menu_sobre" />
-        </menu>
-    </item>
 
+    </group>
     <item android:title="Compartilhar">
         <menu>
             <item

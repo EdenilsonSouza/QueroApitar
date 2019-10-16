@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0EEEE">
+<!--
+
+    <LinearLayout
+        android:id="@+id/linear_dados_partida"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#E0EEEE">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/foto_arbitro"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/account"/>
+
+            <TextView
+                android:id="@+id/txt_nome_arbitro_modal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:textAlignment="textStart"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="120dp"
+                android:text="NOME"
+                android:layout_alignParentTop="true"/>
+
+
+            <LinearLayout
+                android:id="@+id/linear_avaliacao_modal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/txt_nome_arbitro_modal">
+
+                <TextView
+                    android:id="@+id/txt_avaliacao_arbitro_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:textAlignment="textStart"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_below="@+id/txt_nome_arbitro_modal"
+                    />
+
+                <TextView
+                    android:id="@+id/rating1_avaliacao_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_avaliacao_vazia_24px"
+                    android:layout_below="@+id/txt_avaliacao_arbitro_modal"/>
+
+                <TextView
+                    android:id="@+id/rating2_avaliacao_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_avaliacao_vazia_24px"
+                    android:layout_below="@+id/txt_avaliacao_arbitro_modal"/>
+
+                <TextView
+                    android:id="@+id/rating3_avaliacao_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_avaliacao_vazia_24px"
+                    android:layout_below="@+id/txt_avaliacao_arbitro_modal"/>
+
+                <TextView
+                    android:id="@+id/rating4_avaliacao_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_avaliacao_vazia_24px"
+                    android:layout_below="@+id/txt_avaliacao_arbitro_modal"/>
+
+                <TextView
+                    android:id="@+id/rating5_avaliacao_modal"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_avaliacao_vazia_24px"
+                    android:layout_below="@+id/txt_avaliacao_arbitro_modal"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_idade_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/linear_avaliacao_modal">
+
+                <TextView
+                    android:id="@+id/txt_idade_arbitro_modal"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="120dp"
+                    android:text="IDADE"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_numero_partidas_arbitro_modal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="2dp"
+                    android:text="Nº de partidas:"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/linear_idade_arbitro">
+
+                <TextView
+                    android:id="@+id/txt_esporte_arbitro_modal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="120dp"
+                    android:text="ESPORTE"
+                    android:layout_below="@+id/txt_idade_arbitro"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_valor_arbitro_modal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12dp"
+                    android:layout_marginTop="4dp"
+                    android:text="VALOR"
+                    android:layout_below="@+id/txt_idade_arbitro"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_lista_de_partidas"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/linear_dados_partida"
+        android:layout_marginTop="3dp"
+        android:orientation="vertical"
+        android:background="#FFA500">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_lista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tooltipText="Atualizando..." >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_lista_partidas_modal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#E0EEEE"
+                android:clipToPadding="false"
+                android:elevation="0dp"
+                android:paddingBottom="4dp" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    </LinearLayout>
+
+    -->
+
+    <LinearLayout
+        android:id="@+id/linear_botoes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_lista_de_partidas"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:background="#E0EEEE">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_pedido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:background="@drawable/btn_border_circus"
+                android:text="@string/btn_solicitacao_apito"
+                android:layout_marginBottom="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0EEEE"
+    tools:context=".HistoricoPartidasArbitroActivity"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPartidasArbitroActivity"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:titleTextColor="@android:color/white">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/linear_sem_resgitros_historico_arbitro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_marginTop="3dp">
+
+        <TextView
+            android:id="@+id/txt_sem_registro_historico_arbitro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E0EEEE"
+            android:textSize="12dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:text="Não há registros."/>
+
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefreshHistoricoPartidasArbitro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tooltipText="Atualizando..." >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_historico_partidas_arbitro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E0EEEE"
+            android:clipToPadding="false"
+            android:elevation="0dp"
+            android:paddingBottom="80dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

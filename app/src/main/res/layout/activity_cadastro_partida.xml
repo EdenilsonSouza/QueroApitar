@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/AppTheme.NoActionBar"
+    android:background="#E8E8E8"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSalvar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:titleTextColor="@android:color/white">
+
+            <Button
+                android:id="@+id/btnSalvarPartida"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/estilo_btn_salvar_partida"
+                android:drawableLeft="@drawable/ic_check_24px"
+                android:layout_gravity="right"
+                android:onClick="SalvarPartidaClick"
+                android:paddingLeft="15dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/linearDonoDoJogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtDisplayUsuarioDonoPartida"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearSpinnerEsportes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/linearDonoDoJogo"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinner_esporte"
+            style="@style/estilo_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearCamposData"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@+id/linearSpinnerEsportes"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAbreDatePicker"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/estilo_btn_data_partida"
+            android:drawableLeft="@drawable/ic_twotone_date_range_24px"
+            android:onClick="AdicionaDataPartida_click"
+            android:paddingLeft="12dip"
+            android:paddingRight="20dip" />
+
+        <RelativeLayout
+            android:layout_width="92dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txtDiaDataPartida"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:id="@+id/txtMesDataPartida"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/txtDiaDataPartida"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
+                android:paddingLeft="3dp"
+               />
+
+            <TextView
+                android:id="@+id/txtAnoDataPartida"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="38dp"
+                android:layout_toRightOf="@+id/txtDiaDataPartida"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:textSize="14dp"
+                />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtDisplayHoraPartida"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:paddingRight="10dp"
+            android:textAlignment="viewEnd"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnAbreTimePicker"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/estilo_btn_data_partida"
+            android:drawableLeft="@drawable/ic_two_timer_24px"
+            android:onClick="AdicionaHoraPartida_click"
+            android:paddingLeft="13dip"
+            android:paddingRight="20dip" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearBuscaMapa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lbl_endereco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="Endereço"
+            android:textSize="14sp" />
+
+       <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name=
+                "com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+
+    </LinearLayout>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativelayout_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="468dp"
+            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

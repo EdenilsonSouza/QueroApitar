@@ -1,19 +1,269 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PerfilUsuarioActivity">
+    tools:context=".PerfilUsuarioActivity"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtEmailUsuario"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPerfilActivity"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:titleTextColor="@android:color/white">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/linear_foto_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="7dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgFotoUsuario"
+            android:layout_width="140dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@drawable/account"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_vertical" >
+
+            <ImageButton
+                android:id="@+id/btnUploadFoto"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center|center_vertical"
+                android:src="@drawable/ic_camera_24px"
+                android:background="@drawable/estilo_arredondado_imagem"
+                android:onClick="UploadFotoPerfil"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_informacoes_usuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="170dp"
-        tools:layout_editor_absoluteY="151dp" />
+        android:layout_below="@+id/linear_foto_usuario"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtTipoPerfilUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="Tipo de Usuario"
+            android:textAlignment="center"
+            />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/txtNomeUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="NOME"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/txtEmailUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="14sp"
+            android:text="EMAIL"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/labelDataNascimento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:paddingLeft="5dp"
+            android:textSize="10sp"
+            android:text="Data de Nascimento"
+            android:textAlignment="textStart"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/linearCamposData"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAdicionaDataNascimento"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/estilo_btn_data_partida"
+                android:drawableLeft="@drawable/ic_twotone_date_range_24px"
+                android:onClick="AdicionaDataNascimento_click"
+                android:paddingLeft="12dip"
+                android:paddingRight="20dip" />
+
+                <TextView
+                    android:id="@+id/txtDataNascimento"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtDisplayGenero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:paddingLeft="5dp"
+        android:textSize="10sp"
+        android:text="Gênero"
+        />
+
+    <LinearLayout
+        android:id="@+id/linearRadioGenero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <RadioGroup
+            android:id="@+id/radioGroupGenero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioMasculino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="130dp"
+                android:textSize="12dp"
+                android:text="@string/radio_masculino" />
+
+            <RadioButton
+                android:id="@+id/radioFeminino"
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:text="@string/radio_feminino" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearBuscaMapa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lbl_endereco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="Pesquise endereço:"
+            android:textSize="10sp" />
+
+        <fragment
+            android:id="@+id/autocomplete_fragment_perfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name=
+                "com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+
+        <TextView
+            android:id="@+id/txt_endereco_perfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:paddingLeft="5dp"
+            android:text="Meu endereço:"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <!--
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativelayout_map_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map_usuario"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_range_endereco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativelayout_map_usuario"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_range_distancia_partidas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="5dp"
+            android:textSize="10sp"
+            android:text="Escolha uma distância"
+            />
+
+        <SeekBar
+            android:id="@+id/seekBar_distancia_partidas"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:progress="10"
+            android:background="#98FB98"
+            android:progressDrawable="@drawable/progress"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_marginTop="10dp"/>
+
+
+    </LinearLayout>
+
+-->
+
+
+</LinearLayout>

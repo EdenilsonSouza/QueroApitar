@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#E0EEEE">
+
+    <LinearLayout
+        android:id="@+id/linear_conteudo_convites_arbitro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/estilo_recyclerview"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imagem_perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/account"/>
+
+            <TextView
+                android:id="@+id/txt_status_convite_arbitro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:text="STATUS"
+                android:layout_alignParentTop="true"
+                android:textAlignment="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginRight="55dp"
+                />
+
+            <TextView
+                android:id="@+id/txt_nome_remetente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_status_convite_arbitro"
+                android:textSize="10dp"
+                android:textAlignment="textStart"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="88dp"
+                android:layout_marginRight="48dp"
+                android:text="REMETENTE"/>
+
+            <TextView
+                android:id="@+id/txt_esporte_convite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_nome_remetente"
+                android:text="ESPORTE"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="88dp"
+                android:layout_marginRight="45dp"/>
+
+            <TextView
+                android:id="@+id/txt_data_da_partida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_esporte_convite"
+                android:text="DATA"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="88dp"
+                android:layout_marginRight="45dp"/>
+
+            <TextView
+                android:id="@+id/txt_endereco_da_partida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_data_da_partida"
+                android:text="ENDERECO"
+                android:textSize="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="88dp"
+                android:layout_marginRight="45dp"/>
+
+            <RelativeLayout
+                android:id="@+id/relative_btn_aceitar"
+                android:layout_width="45dp"
+                android:layout_height="94dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_alignParentRight="true">
+
+                <Button
+                    android:id="@+id/btn_aceitar_convite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="47dp"
+                    android:background="#FF9800"
+                    android:drawableLeft="@drawable/ic_done_24px"
+                    android:layout_marginTop="1dp"
+                    android:paddingLeft="12dp"
+                    android:layout_alignParentTop="true"/>
+
+                <Button
+                    android:id="@+id/btn_nao_aceitar_convite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="47dp"
+                    android:background="#FF6347"
+                    android:drawableLeft="@drawable/ic_cancel_24px"
+                    android:layout_marginTop="2dp"
+                    android:paddingLeft="12dp"
+
+                    android:layout_alignParentBottom="true"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout> <!-- linear_conteudo_convites -->
+
+</LinearLayout>
