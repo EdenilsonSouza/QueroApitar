@@ -10,8 +10,7 @@ Usuário tipo Jogador pode criar partidas de esportes coletivos, e ofertar aos �
 
 Usuário do tipo Árbitro visualiza a lista de partidas criadas pelo usuário jogador e pode se candidatar a partida.
 
-Canvas do Produto  - 
-https://drive.google.com/open?id=10DpTs86lx12fU35Vtw3V-zpByuC32or6
+<a  href="https://drive.google.com/open?id=10DpTs86lx12fU35Vtw3V-zpByuC32or6" target="_blank">Canvas do Produto</a>
 
 Desenvolvimento da Solução - 
 https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD
