@@ -12,18 +12,13 @@ Usuário do tipo Árbitro visualiza a lista de partidas criadas pelo usuário jo
 
 <a  href="https://drive.google.com/open?id=10DpTs86lx12fU35Vtw3V-zpByuC32or6" target="_blank">Canvas do Produto</a> 
 
-<a  href="https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD" target="_blank">Desenvolvimento da Solução</a> TELAS
+<a  href="https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD" target="_blank">Desenvolvimento da Solução</a> 
 
+<a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Representação da Arquitetura</a>
 
 Planejamento da Release
 
 Foi utilizado a ferramenta Trello para desenvolvimento do backlog de atividades do projeto. <a  href="https://drive.google.com/open?id=1n4GUymzp4XPx7zOIqXOo-libaunWZRyg" target="_blank">Backlog</a>
-
-
-<a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Representação da Arquitetura</a>diagrama de classes e banco de dados
-
-
-
 
 
 
