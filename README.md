@@ -10,12 +10,17 @@ Usuário tipo Jogador pode criar partidas de esportes coletivos, e ofertar aos �
 
 Usuário do tipo Árbitro visualiza a lista de partidas criadas pelo usuário jogador e pode se candidatar a partida.
 
-Canvas do Produto 
+Canvas do Produto  - 
 https://drive.google.com/open?id=10DpTs86lx12fU35Vtw3V-zpByuC32or6
 
-Desenvolvimento da Solução - prototipo
+Desenvolvimento da Solução - 
+https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD
 
-Planejamento da Release - Product Backlog
+Planejamento da Release
+
+Foi utilizado a ferramenta Trello para desenvolvimento do backlog de atividades do projeto.
+
+https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD
 
 Representação da Arquitetura - diagrama de classes e banco de dados
 
