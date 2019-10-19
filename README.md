@@ -16,12 +16,13 @@ Usuário do tipo Árbitro visualiza a lista de partidas criadas pelo usuário jo
 
 Representação da Arquitetura
 
-A seguir apresenta-se a estrutura de dados utilizada no formato NoSQL – Firebase Database Realtime, ilustrando os relacionamentos entre objetos. Os objetos estão
+Breve descrição da arquitura utilizada no desenvolvimento da aplicação.
+Apresenta-se a estrutura de dados utilizada no formato NoSQL – Firebase Database Realtime, ilustrando os relacionamentos entre objetos. Os objetos estão
 organizadas da seguinte forma: PK(chave primária), FK(chave estrangeira),
 Campo(nome do atributo da tabela), Tipo de Dados(formato do atributo) e
 Descrição(comentário sobre o atributo)
 <a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Diagrama de Classes e Dicionario de Dados</a>
-Breve descrição da arquitura utilizada no desenvolvimento da aplicação.
+
 
 Planejamento da Release
 
