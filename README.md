@@ -21,7 +21,7 @@ Apresenta-se a estrutura de dados utilizada no formato NoSQL – Firebase Databa
 organizadas da seguinte forma: PK(chave primária), FK(chave estrangeira),
 Campo(nome do atributo da tabela), Tipo de Dados(formato do atributo) e
 Descrição(comentário sobre o atributo)
-<a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Diagrama de Classes</a>
+<a  href="https://drive.google.com/open?id=1-YGxtZm8hDVB7-FFE2ByiCGs4aiMrm0y" target="_blank">Diagrama de Classes</a><br>
 <a href="https://docs.google.com/spreadsheets/d/156hLktLrooEjoFtKAYKmiSb4TFq1b57UhYuW5hxQjtI/edit?usp=sharing" target="_blank">Dicionário de Dados</a>
 
 Planejamento da Release
