@@ -1,4 +1,4 @@
-# QueroApitar
+# App Quero Apitar
 Aplicativo com Finalidade Acadêmica - Quero Apitar
 
 Aplicativo desenvolvido para conectar Árbitros a Partidas de esportes coletivos.
