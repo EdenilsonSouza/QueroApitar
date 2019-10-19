@@ -14,11 +14,19 @@ Usuário do tipo Árbitro visualiza a lista de partidas criadas pelo usuário jo
 
 <a  href="https://drive.google.com/open?id=17XP1Ic9popHIXda0TYSx-23tXE8F-EhD" target="_blank">Desenvolvimento da Solução</a> 
 
-<a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Representação da Arquitetura</a>
+Representação da Arquitetura
+
+A seguir apresenta-se a estrutura de dados utilizada no formato NoSQL – Firebase Database Realtime, ilustrando os relacionamentos entre objetos. Os objetos estão
+organizadas da seguinte forma: PK(chave primária), FK(chave estrangeira),
+Campo(nome do atributo da tabela), Tipo de Dados(formato do atributo) e
+Descrição(comentário sobre o atributo)
+<a  href="https://drive.google.com/open?id=1SeImjOBdfRWBUG71ps_rlCmdHV5YLq_m" target="_blank">Diagrama de Classes e Dicionario de Dados</a>
+Breve descrição da arquitura utilizada no desenvolvimento da aplicação.
 
 Planejamento da Release
 
-Foi utilizado a ferramenta Trello para desenvolvimento do backlog de atividades do projeto. <a  href="https://drive.google.com/open?id=1n4GUymzp4XPx7zOIqXOo-libaunWZRyg" target="_blank">Backlog</a>
+Foi utilizado a ferramenta Trello para desenvolvimento do backlog de atividades do projeto. 
+<a  href="https://drive.google.com/open?id=1n4GUymzp4XPx7zOIqXOo-libaunWZRyg" target="_blank">Backlog</a>
 
 
 
