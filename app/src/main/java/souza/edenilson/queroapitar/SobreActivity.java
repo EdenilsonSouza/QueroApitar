@@ -16,7 +16,7 @@ public class SobreActivity extends AppCompatActivity {
         TextView txtLogoLicensa = (TextView) findViewById(R.id.txtLogoLicensa);
         TextView txtTextoLicensa = (TextView) findViewById(R.id.txtTextoLicensa);
 
-        String versao = "Versão 004.19";
+        String versao = "Versão 003.19";
         String anoLicensa =  " 2019";
         String textoLicensa =  " -  Desenvolvido por Edenilson Souza";
 
