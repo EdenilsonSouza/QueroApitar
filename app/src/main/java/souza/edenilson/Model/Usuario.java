@@ -29,6 +29,7 @@ public class Usuario implements Serializable {
    private int QuantidadePartidas;
    private double AvaliacaoGeral;
    private List<Esporte> ListaDeEsportes;
+    String Token;
 
     public Usuario() {
     }
@@ -40,7 +41,7 @@ public class Usuario implements Serializable {
 
     public Usuario(String id, String nome, String sobreNome, String email, String senha, String userName,
                    String dataDeNascimento, String urlFoto, String genero, String dataDeCadastro,
-                   int tipoDeUsuario, Endereco endereco, int distanciaDisponivel, boolean disponivel, int quantidadePartidas, double avaliacaoGeral, List<Esporte> listaDeEsportes ) {
+                   int tipoDeUsuario, Endereco endereco, int distanciaDisponivel, boolean disponivel, int quantidadePartidas, double avaliacaoGeral, List<Esporte> listaDeEsportes, String token ) {
         ID = id;
         Nome = nome;
         SobreNome = sobreNome;
@@ -58,6 +59,7 @@ public class Usuario implements Serializable {
         QuantidadePartidas = quantidadePartidas;
         AvaliacaoGeral = avaliacaoGeral;
         ListaDeEsportes = listaDeEsportes;
+        String Token = token;
     }
 
     public String getID() {
@@ -194,5 +196,13 @@ public class Usuario implements Serializable {
 
     public void setListaDeEsportes(List<Esporte> listaDeEsportes) {
         ListaDeEsportes = listaDeEsportes;
+    }
+
+    public String getToken() {
+        return Token;
+    }
+
+    public void setToken(String token) {
+        Token = token;
     }
 }

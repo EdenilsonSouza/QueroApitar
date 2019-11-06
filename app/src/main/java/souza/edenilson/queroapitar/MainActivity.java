@@ -1,5 +1,7 @@
 package souza.edenilson.queroapitar;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,8 +10,17 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -45,21 +58,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import souza.edenilson.Adapter.AdapterPartidasArbitros;
 import souza.edenilson.Adapter.AdapterPartidasJogador;
 import souza.edenilson.Adapter.AdapterPartidasModal;
 import souza.edenilson.DataBase.ConviteDataBase;
 import souza.edenilson.DataBase.PartidaDataBase;
+import souza.edenilson.DataBase.UsuarioDataBase;
 import souza.edenilson.Interface.ArbitrosRecyclerView_Interface;
 import souza.edenilson.Interface.HistoricoPartidasJogadorRecyclerView_Interface;
 import souza.edenilson.Interface.PartidaModalRecyclerViewModal;
 import souza.edenilson.Interface.PartidaRecyclerView_Interface;
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
+import souza.edenilson.MetodosPublicos.MySingleton;
 import souza.edenilson.MetodosPublicos.PermissoesAcesso;
 import souza.edenilson.Model.Convite;
 import souza.edenilson.Model.Endereco;
@@ -74,12 +94,26 @@ public class MainActivity extends AppCompatActivity
         ArbitrosRecyclerView_Interface,
         PartidaModalRecyclerViewModal {
 
+    int NOTIFICATION_PERMISSION_CODE = 123;
+
     private static String TITULO_JOGADOR = "Lista de Partidas";
     private static String TITULO_ARBITRO = "Lista de Árbitros";
 
+    // CONTEUDO FIREBASE MESSAGE
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAA2YhL34U:APA91bEXmEhRThyQnfMFPpMbU_B6D8e9ZP4JJufgU-LGyPtR53n1QwiFebUvSsTugCUo3IC8SxeCpvAGiRqQ9XB138kTIETLqIDgcd-5H51KXpZxt_PyxSU-qeA5BTwubkqh9tw4V3C1";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
+
+    // FECHA FIREBASE MESSAGE
 
     FirebaseDatabase firebaseDatabase;
-    //FirebaseFirestore firebaseFirestore;
     DatabaseReference databaseReferenceUsuario;
     DatabaseReference databaseReferencePartida;
     DatabaseReference databaseReferenceConvite;
@@ -88,12 +122,13 @@ public class MainActivity extends AppCompatActivity
 
     // OBJETOS
     Usuario usuario;
-    Convite novo_convite;
+    Convite convite;
     MetodosPublicos metodosPublicos;
     PermissoesAcesso permissoesAcesso;
     PartidaTemp partidaTemp;
     PartidaDataBase partidaDataBase;
     ConviteDataBase conviteDataBase;
+    UsuarioDataBase usuarioDataBase;
 
     // RECYCLERVIEW
     private RecyclerView recyclerViewListaPartidasModal;
@@ -111,6 +146,7 @@ public class MainActivity extends AppCompatActivity
     private List<Usuario> listaDeArbitros = new ArrayList<>();
 
     private List<Convite> convitesUsuarioLogado = new ArrayList<>();
+    List<String> listaDeAcoes = new ArrayList<>();
 
     // ELEMENTOS DE TELA
     FloatingActionButton fab;
@@ -140,24 +176,56 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         metodosPublicos = new MetodosPublicos();
-        metodosPublicos.TemInternet(App.getContext(), MainActivity.this, LoginActivity.class );
+        metodosPublicos.TemInternet(App.getContext(), MainActivity.this, LoginActivity.class);
 
         // vem das telas de Login e Cadastro de Usuario
         Intent intent = getIntent();
-        usuario =  (Usuario)intent.getSerializableExtra("usuarioLogado");
+        usuario = (Usuario) intent.getSerializableExtra("usuarioLogado");
+        convite = (Convite) intent.getSerializableExtra("convite");
+        String acao = intent.getStringExtra("acao");
 
-        novo_convite =  (Convite)getIntent().getSerializableExtra("convite");
-
-        if(usuario == null){
+        if (usuario == null && convite == null) {
             Intent i = new Intent(MainActivity.this, CriarContaActivity.class);
             startActivity(i);
         }
+
+        if(convite != null && convite.getConvidado().getID() != null && convite.getRemetente().getID() != null){
+
+            // direciona para tela do JOGADOR
+            if(convite.getRemetente().getID().equals(usuario.getID())){
+                if(acao.equals("arbitroSeOferece") || acao.equals("arbitroRespondeJogador")){
+                    Intent i = new Intent(MainActivity.this, ConvitesJogadorActivity.class);
+                    i.putExtra("usuarioLogado",usuario);
+                    i.putExtra("convite",convite);
+                    startActivity(i);
+                    finish();
+                }
+            }
+
+            // direciona para tela do ARBITRO
+            if(convite.getConvidado().getID().equals(usuario.getID())){
+                if(acao.equals("jogadorConvidaArbitro") || acao.equals("arbitroRecebeAvaliacao") || acao.equals("DonoDaPartidaAceitouArbitro") || acao.equals("DonoDaPartidaNaoAceitouArbitro")){
+                    Intent i = new Intent(MainActivity.this, ConvitesArbitroActivity.class);
+                    i.putExtra("usuarioLogado",usuario);
+                    i.putExtra("convite",convite);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        }
+
+        // busca o token do firebase
+        if(usuario.getToken() == null){
+            GeraTokenFirebaseMessage();
+        }
+
+        //EnviarNotificacao();
 
         InicializaObjetos();
 
         permissoesAcesso.PermissaoMapa(this);
         permissoesAcesso.PermissaoGaleria(this);
-
+        //permissoesAcesso.PermissaoNotifications(this);
 
         InicializaCampos();
         InicializaFirebase();
@@ -167,7 +235,7 @@ public class MainActivity extends AppCompatActivity
         ConsultaConvitesDoUsuarioLogado(usuario);
 
         // exibe o FAB de adicionar partida somente se o usuário for JOGADOR
-        if(usuario != null && usuario.getTipoDeUsuario() == 2){  // ENTRA AQUI SE FOR JOGADOR
+        if (usuario != null && usuario.getTipoDeUsuario() == 2) {  // ENTRA AQUI SE FOR JOGADOR
             this.setTitle(TITULO_ARBITRO);
 
             // mostra a lista de arbitros para o jogador
@@ -184,8 +252,8 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-        }else{
-             // ENTRA AQUI SE FOR ARBITRO
+        } else {
+            // ENTRA AQUI SE FOR ARBITRO
             fab.hide();
             this.setTitle(TITULO_JOGADOR);
 
@@ -213,16 +281,29 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        permissoesAcesso.PermissaoMapa(this);
         permissoesAcesso.PermissaoGaleria(this);
+        //  permissoesAcesso.PermissaoNotifications(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        permissoesAcesso.PermissaoMapa(this);
         permissoesAcesso.PermissaoGaleria(this);
+        //    permissoesAcesso.PermissaoNotifications(this);
     }
 
-    private void InicializaCampos(){
+
+    private void InicializaFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReferenceUsuario = firebaseDatabase.getReference("usuario");
+        databaseReferencePartida = firebaseDatabase.getReference("partida");
+        databaseReferenceConvite = firebaseDatabase.getReference("convite");
+    }
+
+    private void InicializaCampos() {
         btn_meus_convites = (Button) findViewById(R.id.btn_meus_convites);
         btn_minhas_partidas = (Button) findViewById(R.id.btn_minhas_partidas);
         txt_sem_registro = (TextView) findViewById(R.id.txt_sem_registro_main);
@@ -232,7 +313,7 @@ public class MainActivity extends AppCompatActivity
         txt_contador_convites = (TextView) findViewById(R.id.txt_contador_convites);
     }
 
-    private void ConfiguraBotoes(){
+    private void ConfiguraBotoes() {
 
         btn_meus_convites.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -260,40 +341,41 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void ConsultaConvitesDoUsuarioLogado(Usuario arbitro){
+    private void ConsultaConvitesDoUsuarioLogado(Usuario arbitro) {
 
         databaseReferenceConvite = firebaseDatabase.getReference("convite");
         databaseReferenceConvite.addValueEventListener(new ValueEventListener() {
             int contador_respostas_convites = 0;
             int contador_convites_arbitros = 0;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()){
-                    Convite convite =  dataSnapshot.getValue(Convite.class);
-                   // convitesUsuarioLogado
-                    if(convite.getConvidado() != null && convite.getConvidado().getID().equals(usuario.getID())){
+                if (dataSnapshot.exists()) {
+                    Convite convite = dataSnapshot.getValue(Convite.class);
+                    // convitesUsuarioLogado
+                    if (convite.getConvidado() != null && convite.getConvidado().getID().equals(usuario.getID())) {
 
                         convitesUsuarioLogado.add(convite);
                     }
 
-                    if(convite.getRemetente() != null && convite.getRemetente().getID().equals(usuario.getID())){
+                    if (convite.getRemetente() != null && convite.getRemetente().getID().equals(usuario.getID())) {
 
                         convitesUsuarioLogado.add(convite);
                     }
                 }
 
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    if(child.exists()){
-                        Convite convite =  child.getValue(Convite.class);
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (child.exists()) {
+                        Convite convite = child.getValue(Convite.class);
 
-                        if(convite.getConvidado() != null && convite.getConvidado().getID().equals(usuario.getID())){
+                        if (convite.getConvidado() != null && convite.getConvidado().getID().equals(usuario.getID())) {
 
                             convitesUsuarioLogado.add(convite);
 
                         }
 
-                        if(convite.getRemetente() != null && convite.getRemetente().getID().equals(usuario.getID())){
+                        if (convite.getRemetente() != null && convite.getRemetente().getID().equals(usuario.getID())) {
 
                             convitesUsuarioLogado.add(convite);
                         }
@@ -309,53 +391,54 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void ConsultaConvitesDoArbitro(Usuario arbitro){
+    private void ConsultaConvitesDoArbitro(Usuario arbitro) {
 
         databaseReferenceConvite = firebaseDatabase.getReference("convite");
         databaseReferenceConvite.addValueEventListener(new ValueEventListener() {
             int contador_respostas_convites = 0;
             int contador_convites_arbitros = 0;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()){
-                    Convite convite =  dataSnapshot.getValue(Convite.class);
+                if (dataSnapshot.exists()) {
+                    Convite convite = dataSnapshot.getValue(Convite.class);
 
-                    if(convite.getConvidado() != null && convite.getConvidado().getID() != null){
-                        if(convite.getConvidado().getID().equals(usuario.getID()) &&  convite.getStatus() == 2 && !convite.isVisualizado()){  // se for aguardando
+                    if (convite.getConvidado() != null && convite.getConvidado().getID() != null) {
+                        if (convite.getConvidado().getID().equals(usuario.getID()) && convite.getStatus() == 2 && !convite.isVisualizado()) {  // se for aguardando
                             contador_convites_arbitros++;
                         }
 
-                        if(convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 1 && !convite.isVisualizado()
-                                || convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 3 && !convite.isVisualizado()){
+                        if (convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 1 && !convite.isVisualizado()
+                                || convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 3 && !convite.isVisualizado()) {
                             contador_respostas_convites++;
                         }
                     }
                 }
 
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    if(child.exists()){
-                        Convite convite =  child.getValue(Convite.class);
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (child.exists()) {
+                        Convite convite = child.getValue(Convite.class);
 
-                        if(convite.getConvidado() != null && convite.getConvidado().getID() != null){
+                        if (convite.getConvidado() != null && convite.getConvidado().getID() != null) {
 
-                            if(convite.getConvidado().getID().equals(usuario.getID()) &&  convite.getStatus() == 2 && !convite.isVisualizado()){  // se for aguardando
+                            if (convite.getConvidado().getID().equals(usuario.getID()) && convite.getStatus() == 2 && !convite.isVisualizado()) {  // se for aguardando
                                 contador_convites_arbitros++;
                             }
 
-                            if(convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 1 && !convite.isVisualizado()
-                               || convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 3 && !convite.isVisualizado()){
+                            if (convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 1 && !convite.isVisualizado()
+                                    || convite.getRemetente().getID().equals(usuario.getID()) && convite.getStatus() == 3 && !convite.isVisualizado()) {
                                 contador_respostas_convites++;
                             }
                         }
                     }
                 }
 
-                if(contador_convites_arbitros > 0){
+                if (contador_convites_arbitros > 0) {
                     txt_contador_convites.setText(String.valueOf(contador_convites_arbitros));
                 }
 
-                if(contador_respostas_convites > 0){
+                if (contador_respostas_convites > 0) {
                     txt_contador_convites.setText(String.valueOf(contador_respostas_convites));
                 }
             }
@@ -369,27 +452,19 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void OcultaItemMenu(){
+    private void OcultaItemMenu() {
         Menu menu = navigationView.getMenu();
 
         // SE FOR JOGADOR OCULTA
-        if(usuario != null && usuario.getTipoDeUsuario() == 2){
-           // menu.findItem(R.id.nav_configuracao).setTitle(getString(R.string.menu_configuracao_sem_titulo));
+        if (usuario != null && usuario.getTipoDeUsuario() == 2) {
+            // menu.findItem(R.id.nav_configuracao).setTitle(getString(R.string.menu_configuracao_sem_titulo));
             menu.findItem(R.id.nav_configuracao).setVisible(false);
         }
     }
 
-    private void InicializaFirebase(){
-        mAuth = FirebaseAuth.getInstance();
-        // firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReferenceUsuario = firebaseDatabase.getReference("usuario");
-        databaseReferencePartida = firebaseDatabase.getReference("partida");
-        databaseReferenceConvite = firebaseDatabase.getReference("convite");
-    }
 
-    private void InicializaObjetos(){
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipeToRefresh);
+    private void InicializaObjetos() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
 
         permissoesAcesso = new PermissoesAcesso();
 
@@ -398,51 +473,52 @@ public class MainActivity extends AppCompatActivity
         partidaTemp = new PartidaTemp();
         partidaDataBase = new PartidaDataBase();
         conviteDataBase = new ConviteDataBase();
+        usuarioDataBase = new UsuarioDataBase();
 
         linear_sem_resgitros_main = (LinearLayout) findViewById(R.id.linear_sem_resgitros_main);
     }
 
-    private void ConfiguraSwipeRefreshLayout(){
+    private void ConfiguraSwipeRefreshLayout() {
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-       mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-           @Override
-           public void onRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
-               if(usuario != null){
-                   if(usuario.getTipoDeUsuario() == 2) {   // se for jogador
-                       PreencheListaDeArbitros();
-                   }else if(usuario.getTipoDeUsuario() == 1){ // se for arbitro
-                       PreencheListaDePartidas();
-                   }
-               }
-               mSwipeRefreshLayout.setRefreshing(false);
-           }
-       });
+                if (usuario != null) {
+                    if (usuario.getTipoDeUsuario() == 2) {   // se for jogador
+                        PreencheListaDeArbitros();
+                    } else if (usuario.getTipoDeUsuario() == 1) { // se for arbitro
+                        PreencheListaDePartidas();
+                    }
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
-    private void PreencheListaDePartidasModal(){
+    private void PreencheListaDePartidasModal() {
 
         databaseReferencePartida = firebaseDatabase.getReference("partida");
         databaseReferencePartida.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaDePartidasModal.clear();
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     Partida partida = dataSnapshot.getValue(Partida.class);
 
-                    if(partida != null){
+                    if (partida != null) {
 
-                        if(partida.getDataDaPartida() != null){
+                        if (partida.getDataDaPartida() != null) {
                             Date dataAtual = new Date();
                             Date dataDaPartida = metodosPublicos.ConvertStringParaData(partida.getDataDaPartida());
 
                             int dataPassada = dataDaPartida.compareTo(dataAtual);
 
-                            if(dataPassada > 0) {
+                            if (dataPassada > 0) {
                                 // PRECISA ESTAR ATIVA E O CONVITE INICIADO = NAO PODE TER SIDO ACEITO AINDA.
-                                if(partida.getUsuarioDonoDaPartida() != null && partida.getUsuarioDonoDaPartida().getID().equals(usuario.getID()) && partida.isStatus() && partida.getStatusConvite() < 1){
-                                    if(!listaDePartidasModal.contains(partida)){
+                                if (partida.getUsuarioDonoDaPartida() != null && partida.getUsuarioDonoDaPartida().getID().equals(usuario.getID()) && partida.isStatus() && partida.getStatusConvite() < 1) {
+                                    if (!listaDePartidasModal.contains(partida)) {
                                         listaDePartidasModal.add(partida);
                                     }
                                 }
@@ -451,22 +527,22 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
-                for(DataSnapshot child: dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                    if(child.exists()){
+                    if (child.exists()) {
                         Partida partida1 = child.getValue(Partida.class);
 
-                        if(partida1 != null){
+                        if (partida1 != null) {
 
-                            if(partida1.getDataDaPartida() != null){
+                            if (partida1.getDataDaPartida() != null) {
                                 Date dataAtual = new Date();
                                 Date dataDaPartida = metodosPublicos.ConvertStringParaData(partida1.getDataDaPartida());
 
                                 int dataPassada = dataDaPartida.compareTo(dataAtual);
 
-                                if(dataPassada > 0) {
-                                    if(partida1.getUsuarioDonoDaPartida() != null && partida1.getUsuarioDonoDaPartida().getID().equals(usuario.getID()) && partida1.isStatus() && partida1.getStatusConvite() < 1){
-                                        if(!listaDePartidasModal.contains(partida1)){
+                                if (dataPassada > 0) {
+                                    if (partida1.getUsuarioDonoDaPartida() != null && partida1.getUsuarioDonoDaPartida().getID().equals(usuario.getID()) && partida1.isStatus() && partida1.getStatusConvite() < 1) {
+                                        if (!listaDePartidasModal.contains(partida1)) {
                                             listaDePartidasModal.add(partida1);
                                         }
                                     }
@@ -476,7 +552,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
-                if(listaDePartidasModal.size() > 0){
+                if (listaDePartidasModal.size() > 0) {
                     existeListaDePartidasModal = true;
                 }
 
@@ -490,43 +566,43 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void PreencheListaDePartidas(){
+    private void PreencheListaDePartidas() {
 
         databaseReferencePartida = firebaseDatabase.getReference("partida");
         databaseReferencePartida.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaDePartidas.clear();
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     Partida partida = dataSnapshot.getValue(Partida.class);
 
                     // pega a distancia do usuario logado(arbitro) e a distancia do endereco da partida
-                    int distancia = (int)Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partida.getEndereco(),"K"));
+                    int distancia = (int) Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partida.getEndereco(), "K"));
 
-                    if(distancia <= usuario.getDistanciaDisponivel()){
+                    if (distancia <= usuario.getDistanciaDisponivel()) {
 
-                        if(partida.getUsuarioDonoDaPartida() != null && partida.getStatusConvite() <= 0){
+                        if (partida.getUsuarioDonoDaPartida() != null && partida.getStatusConvite() <= 0) {
 
-                            if(!listaDePartidas.contains(partida)){
+                            if (!listaDePartidas.contains(partida)) {
                                 listaDePartidas.add(partida);
                             }
                         }
                     }
                 }
 
-                for(DataSnapshot child: dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                    if(child.exists()){
+                    if (child.exists()) {
                         Partida partida1 = child.getValue(Partida.class);
 
                         // pega a distancia do usuario logado(arbitro) e a distancia do endereco da partida
-                        int distancia = (int)Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partida1.getEndereco(),"K"));
+                        int distancia = (int) Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partida1.getEndereco(), "K"));
 
-                        if(distancia <= usuario.getDistanciaDisponivel()) {
+                        if (distancia <= usuario.getDistanciaDisponivel()) {
 
-                            if(partida1.getUsuarioDonoDaPartida() != null && partida1.getStatusConvite() <= 0) {
+                            if (partida1.getUsuarioDonoDaPartida() != null && partida1.getStatusConvite() <= 0) {
 
-                                if(!listaDePartidas.contains(partida1)){
+                                if (!listaDePartidas.contains(partida1)) {
                                     listaDePartidas.add(partida1);
                                 }
                             }
@@ -534,7 +610,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
-                if(listaDePartidas.size() > 0){
+                if (listaDePartidas.size() > 0) {
                     existeListaDePartidas = true;
                 }
 
@@ -549,52 +625,52 @@ public class MainActivity extends AppCompatActivity
     }
 
     // mostra a lista de arbitros disponivel para o jogador;
-    private void PreencheListaDeArbitros(){
+    private void PreencheListaDeArbitros() {
 
         databaseReferenceUsuario = firebaseDatabase.getReference("usuario");
         databaseReferenceUsuario.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaDeArbitros.clear();
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
 
                     Usuario arbitro = dataSnapshot.getValue(Usuario.class);
                     //float distancia = 0;
                     int distancia = 0;
 
-                    if(partidaTemp.getPartida() != null){
-                        distancia = (int)Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partidaTemp.getPartida().getEndereco(),"K"));
+                    if (partidaTemp.getPartida() != null) {
+                        distancia = (int) Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partidaTemp.getPartida().getEndereco(), "K"));
                     }
 
-                    if(arbitro.getID() != null && arbitro.getTipoDeUsuario() == 1){
+                    if (arbitro.getID() != null && arbitro.getTipoDeUsuario() == 1) {
 
                         // verifica se esta dentro da distancia escolida
-                        if(distancia <= arbitro.getDistanciaDisponivel()){
+                        if (distancia <= arbitro.getDistanciaDisponivel()) {
 
-                            if(!listaDeArbitros.contains(arbitro)){
+                            if (!listaDeArbitros.contains(arbitro)) {
                                 listaDeArbitros.add(arbitro);
                             }
                         }
                     }
                 }
 
-                for(DataSnapshot child: dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                    if(child.exists()){
+                    if (child.exists()) {
                         Usuario arbitro1 = child.getValue(Usuario.class);
                         //float distancia = 0;
                         int distancia = 0;
 
-                        if(partidaTemp.getPartida() != null){
-                            distancia = (int)Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partidaTemp.getPartida().getEndereco(),"K"));
+                        if (partidaTemp.getPartida() != null) {
+                            distancia = (int) Math.ceil(metodosPublicos.CalculaDistanciaDisponivel(usuario, partidaTemp.getPartida().getEndereco(), "K"));
                         }
 
-                        if(arbitro1 != null && arbitro1.getTipoDeUsuario() == 1){
+                        if (arbitro1 != null && arbitro1.getTipoDeUsuario() == 1) {
 
                             // verifica se esta dentro da distancia escolida
-                            if(distancia <= arbitro1.getDistanciaDisponivel()){
+                            if (distancia <= arbitro1.getDistanciaDisponivel()) {
 
-                                if(!listaDeArbitros.contains(arbitro1)){
+                                if (!listaDeArbitros.contains(arbitro1)) {
                                     listaDeArbitros.add(arbitro1);
                                 }
                             }
@@ -613,42 +689,42 @@ public class MainActivity extends AppCompatActivity
 
 
     //Aqui é instanciado o Recyclerview
-    public void InicializaRecyclerView(){
+    public void InicializaRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this);
         recyclerViewListas = (RecyclerView) findViewById(R.id.recycler_listas);
         recyclerViewListas.setLayoutManager(mLayoutManager);
     }
 
-    private void InicializaRecyclerviewPartidasModal(View view){
+    private void InicializaRecyclerviewPartidasModal(View view) {
         mLayoutManagerModal = new LinearLayoutManager(this);
         recyclerViewListaPartidasModal = (RecyclerView) view.findViewById(R.id.recycler_lista_partidas_modal);
         recyclerViewListaPartidasModal.setLayoutManager(mLayoutManagerModal);
     }
 
-    private void PopulaRecyclerViewPartidasModal(List<Partida> _listaDePartidasModal){
+    private void PopulaRecyclerViewPartidasModal(List<Partida> _listaDePartidasModal) {
         adapterPartidasModal = new AdapterPartidasModal(this, _listaDePartidasModal, this);
         recyclerViewListaPartidasModal.setAdapter(adapterPartidasModal);
     }
 
-    private void PopulaRecyclerViewPartidas(){
+    private void PopulaRecyclerViewPartidas() {
         adapterPartidasJogador = new AdapterPartidasJogador(this, listaDePartidas, this);
         recyclerViewListas.setAdapter(adapterPartidasJogador);
 
-        if(listaDePartidas.size() <= 0){
-           // linear_sem_resgitros_main.setVisibility(View.VISIBLE);
+        if (listaDePartidas.size() <= 0) {
+            // linear_sem_resgitros_main.setVisibility(View.VISIBLE);
             txt_sem_registro.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             txt_sem_registro.setVisibility(View.GONE);
         }
     }
 
     // preenche a lista de arbitros disponiveis.
-    private void PopulaRecyclerViewArbitros(){
+    private void PopulaRecyclerViewArbitros() {
         adapterPartidasArbitros = new AdapterPartidasArbitros(this, listaDeArbitros, this);
         recyclerViewListas.setAdapter(adapterPartidasArbitros);
 
-        if(listaDeArbitros.size() > 0){
-           // txt_sem_registro.setText("Clique na linha para se candidar a partida.");
+        if (listaDeArbitros.size() > 0) {
+            // txt_sem_registro.setText("Clique na linha para se candidar a partida.");
             txt_sem_registro.setVisibility(View.GONE);
         }
     }
@@ -726,11 +802,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_sair) {
 
-            if(mAuth != null){
+            if (mAuth != null) {
                 mAuth.signOut();
                 FirebaseAuth.getInstance().signOut();
             }
-           // System.exit(0);
+            // System.exit(0);
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -757,10 +833,10 @@ public class MainActivity extends AppCompatActivity
                 Object obj = recyclerViewListas.getAdapter();
                 String objeto = obj.toString();
 
-                if(objeto.contains("AdapterPartidasArbitros")){
+                if (objeto.contains("AdapterPartidasArbitros")) {
                     adapterPartidasArbitros = (AdapterPartidasArbitros) recyclerViewListas.getAdapter();
                     adapterPartidasArbitros.remove(swipedPosition); //  AQUI REMOVE SOMENTE DA LISTA EM TEMPO DE EXEXUÇÃO
-                }else if(objeto.contains("AdapterPatidas")){
+                } else if (objeto.contains("AdapterPatidas")) {
                     adapterPartidasJogador = (AdapterPartidasJogador) recyclerViewListas.getAdapter();
                     adapterPartidasJogador.remove(swipedPosition); // AQUI REMOVE DA LISTA E TAMBEM REMOVE O OBJETO DO BANCO DE DADOS
                 }
@@ -782,39 +858,39 @@ public class MainActivity extends AppCompatActivity
         Usuario arbitro = null;
         String objeto = object.toString();
 
-        if(objeto.contains("Model.Usuario")){
+        if (objeto.contains("Model.Usuario")) {
             arbitro = (Usuario) object;
-        }else{
+        } else {
             partida = (Partida) object;
         }
 
-       // QUANDO FOR USUARIO TIPO ARBITRO
-        if(partida != null){
+        // QUANDO FOR USUARIO TIPO ARBITRO
+        if (partida != null) {
 
             // Aqui verifica se a data ja passou
             Date dataAtual = new Date();
             Date dataDaPartida = metodosPublicos.ConvertStringParaData(partida.getDataDaPartida());
             int dataPassada = dataDaPartida.compareTo(dataAtual);
 
-            if(dataPassada < 0) {
+            if (dataPassada < 0) {
                 //ja passou a data da partida
                 partida.setStatusConvite(7);
                 partidaDataBase.Atualiza(partida);
-            }else{
+            } else {
                 AbreModalArbitroSeOfereceParaPartida(partida);
             }
 
         }
 
         //  QUANDO FOR USUARIO TIPO JOGADOR
-        if(arbitro != null){
+        if (arbitro != null) {
             AbreCadastroConexaoUsuarioConvidaArbitro(arbitro);
         }
 
     }
 
     // MODAL DE CONFIRMAÇÃO DO CONVITE
-    private void AbreModalArbitroSeOfereceParaPartida(Partida partida){
+    private void AbreModalArbitroSeOfereceParaPartida(Partida partida) {
         permissoesAcesso.PermissaoGaleria(this);
         LayoutInflater li = getLayoutInflater();
 
@@ -831,7 +907,7 @@ public class MainActivity extends AppCompatActivity
                 partidaDataBase.Atualiza(partida);
 
                 // CRIA O CONVITE PARA APITAR O JOGO
-                String Id =  partida.getID();
+                String Id = partida.getID();
                 Convite convite = new Convite(Id,
                         metodosPublicos.GetData(new Date()),
                         partida.getUsuarioDonoDaPartida(),
@@ -856,12 +932,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     // AQUI VAI SER CARREGADO OS DADOS DO USUARIO ARBITRO SELECIONADO - Abre MODAL Convite Arbitro
-    private void AbreCadastroConexaoUsuarioConvidaArbitro(Usuario arbitroSelecionado){
+    private void AbreCadastroConexaoUsuarioConvidaArbitro(Usuario arbitroSelecionado) {
         permissoesAcesso.PermissaoGaleria(this);
         LayoutInflater li = getLayoutInflater();
 
         //inflamos o layout conecta_partida_arbitro.xml na view
-         View view = li.inflate(R.layout.conecta_partida_arbitro, null);
+        View view = li.inflate(R.layout.conecta_partida_arbitro, null);
 
         // INICIALIZA A RECYCLERVIEW QUANDO ABRE A MODAL
         InicializaRecyclerviewPartidasModal(view);
@@ -892,9 +968,9 @@ public class MainActivity extends AppCompatActivity
         LinearLayout linear_segundo_esporte_modal = (LinearLayout) view.findViewById(R.id.linear_segundo_esporte_modal);
         LinearLayout linear_terceiro_esporte_modal = (LinearLayout) view.findViewById(R.id.linear_terceiro_esporte_modal);
 
-        if(arbitroSelecionado != null){
+        if (arbitroSelecionado != null) {
 
-            if(arbitroSelecionado.getListaDeEsportes() != null) {
+            if (arbitroSelecionado.getListaDeEsportes() != null) {
 
                 for (Esporte user_esporte : arbitroSelecionado.getListaDeEsportes()) {
 
@@ -923,16 +999,16 @@ public class MainActivity extends AppCompatActivity
             }
 
             // PREENCHE OS VALORES QUANDO ABRE A MODAL
-            metodosPublicos.CarregaImageView(foto_arbitro,arbitroSelecionado.getUrlFoto());
+            metodosPublicos.CarregaImageView(foto_arbitro, arbitroSelecionado.getUrlFoto());
 
-            String nome = arbitroSelecionado.getNome().substring(0,1).toUpperCase() + arbitroSelecionado.getNome().substring(1);
-            String sobrenome =  arbitroSelecionado.getSobreNome().substring(0,1).toUpperCase() + arbitroSelecionado.getSobreNome().substring(1);
+            String nome = arbitroSelecionado.getNome().substring(0, 1).toUpperCase() + arbitroSelecionado.getNome().substring(1);
+            String sobrenome = arbitroSelecionado.getSobreNome().substring(0, 1).toUpperCase() + arbitroSelecionado.getSobreNome().substring(1);
 
             nome_arbitro.setText(nome + " " + sobrenome);
             double avaliacao = 0.0;
-            if(arbitroSelecionado.getAvaliacaoGeral() > 5.0){
+            if (arbitroSelecionado.getAvaliacaoGeral() > 5.0) {
                 avaliacao = 5.0;
-            }else{
+            } else {
                 avaliacao = arbitroSelecionado.getAvaliacaoGeral();
             }
             avaliacao_arbitro.setText(String.valueOf(avaliacao));  // PEGA O VALOR DA AVALIAÇÃO GERAL DO ARBITRO
@@ -941,7 +1017,7 @@ public class MainActivity extends AppCompatActivity
             idade_arbitro.setText(String.valueOf(metodosPublicos.CalculaIdade(dataNascimento)) + " anos");
             numero_partidas.setText("Nº de partidas: " + arbitroSelecionado.getQuantidadePartidas());
 
-            if(arbitroSelecionado.getAvaliacaoGeral() == 1){
+            if (arbitroSelecionado.getAvaliacaoGeral() == 1) {
 
                 rating1_avaliacao.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_avaliacao_total_24px, //left
@@ -973,7 +1049,7 @@ public class MainActivity extends AppCompatActivity
                         0, //right
                         0);//bottom
 
-            }else if(arbitroSelecionado.getAvaliacaoGeral() == 2){
+            } else if (arbitroSelecionado.getAvaliacaoGeral() == 2) {
 
                 rating1_avaliacao.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_avaliacao_total_24px, //left
@@ -1004,7 +1080,7 @@ public class MainActivity extends AppCompatActivity
                         0, //top
                         0, //right
                         0);//bottom
-            }else if(arbitroSelecionado.getAvaliacaoGeral() == 3){
+            } else if (arbitroSelecionado.getAvaliacaoGeral() == 3) {
 
                 rating1_avaliacao.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_avaliacao_total_24px, //left
@@ -1036,7 +1112,7 @@ public class MainActivity extends AppCompatActivity
                         0, //right
                         0);//bottom
 
-            }else if(arbitroSelecionado.getAvaliacaoGeral() == 4){
+            } else if (arbitroSelecionado.getAvaliacaoGeral() == 4) {
 
                 rating1_avaliacao.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_avaliacao_total_24px, //left
@@ -1068,7 +1144,7 @@ public class MainActivity extends AppCompatActivity
                         0, //right
                         0);//bottom
 
-            }else if(arbitroSelecionado.getAvaliacaoGeral() >= 5){
+            } else if (arbitroSelecionado.getAvaliacaoGeral() >= 5) {
 
                 rating1_avaliacao.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_avaliacao_total_24px, //left
@@ -1130,7 +1206,7 @@ public class MainActivity extends AppCompatActivity
             // AQUI PEGA OS VALORES DA MODAL QUANDO CLICAR NO BOTAO CONVIDAR
             public void onClick(View view_user) {
 
-                if(partidaTemp.getPartida() != null){
+                if (partidaTemp.getPartida() != null) {
                     partidaTemp.setArbitro(arbitroSelecionado); // AQUI ADICIONA O ARBITRO NA PARTIDA
 
                     Partida savePartidaTemp = partidaTemp.getPartida();
@@ -1143,15 +1219,15 @@ public class MainActivity extends AppCompatActivity
                     partidaDataBase.Atualiza(savePartidaTemp);
 
                     // CRIA O CONVITE PARA APITAR O JOGO
-                    String Id =  savePartidaTemp.getID();
+                    String Id = savePartidaTemp.getID();
                     Convite convite = new Convite(Id, metodosPublicos.GetData(new Date()),
-                                                  savePartidaTemp.getUsuarioDonoDaPartida(),
-                                                  savePartidaTemp.getArbitro(),
-                                                  savePartidaTemp, 2, false,false);
+                            savePartidaTemp.getUsuarioDonoDaPartida(),
+                            savePartidaTemp.getArbitro(),
+                            savePartidaTemp, 2, false, false);
 
                     conviteDataBase.Salvar(usuario, convite, MainActivity.this, "jogadorConvidaArbitro");
 
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, "Não há nenhuma Partida selecionada.", Toast.LENGTH_LONG).show();
                 }
 
@@ -1184,7 +1260,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void AbreModalRemoverArbitro(Context contexto, String tipoObjeto, int swipedPosition){
+    public void AbreModalRemoverArbitro(Context contexto, String tipoObjeto, int swipedPosition) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
 
@@ -1193,10 +1269,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int id) {
 
-                if(tipoObjeto.contains("AdapterPartidasArbitros")){
+                if (tipoObjeto.contains("AdapterPartidasArbitros")) {
                     adapterPartidasArbitros = (AdapterPartidasArbitros) recyclerViewListas.getAdapter();
                     adapterPartidasArbitros.remove(swipedPosition); //  AQUI REMOVE SOMENTE DA LISTA EM TEMPO DE EXEXUÇÃO
-                }else if(tipoObjeto.contains("AdapterPatidas")){
+                } else if (tipoObjeto.contains("AdapterPatidas")) {
                     adapterPartidasJogador = (AdapterPartidasJogador) recyclerViewListas.getAdapter();
                     adapterPartidasJogador.remove(swipedPosition); // AQUI REMOVE DA LISTA E TAMBEM REMOVE O OBJETO DO BANCO DE DADOS
                 }
@@ -1215,37 +1291,37 @@ public class MainActivity extends AppCompatActivity
 
     public void AbreMinhasPartidas_click(View view) {
 
-       if(usuario.getTipoDeUsuario() == 1){ // SE FOR ARBITRO
-           Intent intent = new Intent(MainActivity.this, HistoricoPartidasArbitroActivity.class);
-           intent.putExtra("usuarioLogado", usuario);
-           startActivity(intent);
-       }else if(usuario.getTipoDeUsuario() == 2){
-           Intent intent = new Intent(MainActivity.this, HistoricoPartidasJogadorActivity.class);
-           intent.putExtra("usuarioLogado", usuario);
-           startActivity(intent);
-       }
+        if (usuario.getTipoDeUsuario() == 1) { // SE FOR ARBITRO
+            Intent intent = new Intent(MainActivity.this, HistoricoPartidasArbitroActivity.class);
+            intent.putExtra("usuarioLogado", usuario);
+            startActivity(intent);
+        } else if (usuario.getTipoDeUsuario() == 2) {
+            Intent intent = new Intent(MainActivity.this, HistoricoPartidasJogadorActivity.class);
+            intent.putExtra("usuarioLogado", usuario);
+            startActivity(intent);
+        }
 
     }
 
     public void AbreMeusConvites_click(View view) {
         txt_contador_convites.setText("");
 
-        if(convitesUsuarioLogado.size() > 0){
+        if (convitesUsuarioLogado.size() > 0) {
 
-            for (Convite con: convitesUsuarioLogado) {
+            for (Convite con : convitesUsuarioLogado) {
 
-               if(!con.isVisualizado()){
-                   con.setVisualizado(true);
-                   conviteDataBase.Atualiza(con,usuario, this, "visualizado");
-               }
+                if (!con.isVisualizado()) {
+                    con.setVisualizado(true);
+                    conviteDataBase.Atualiza(con, usuario, this, "visualizado");
+                }
             }
         }
 
-        if(usuario.getTipoDeUsuario() == 1){ // SE FOR ARBITRO
+        if (usuario.getTipoDeUsuario() == 1) { // SE FOR ARBITRO
             Intent intent = new Intent(MainActivity.this, ConvitesArbitroActivity.class);
             intent.putExtra("usuarioLogado", usuario);
             startActivity(intent);
-        }else{
+        } else {
             Intent intent = new Intent(MainActivity.this, ConvitesJogadorActivity.class);
             intent.putExtra("usuarioLogado", usuario);
             startActivity(intent);
@@ -1253,5 +1329,91 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Detects request codes
+        if (requestCode == NOTIFICATION_PERMISSION_CODE && resultCode == Activity.RESULT_OK) {
+
+            permissoesAcesso.PermissaoNotifications(MainActivity.this);
+        }
+    }
+
+
+    // AQUI ESTA OS METODOS PARA ENVIAR A NOTIFICACAO PARA OS DISPOSITIVOS
+    private void EnviarNotificacao() {
+        //TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
+        // NOTIFICATION_TITLE = edtTitle.getText().toString();
+        // NOTIFICATION_MESSAGE = edtMessage.getText().toString();
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", "Titulo da Notificação");
+            notifcationBody.put("message", "Texto da Notificação");
+
+            notification.put("to", TOPIC);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage());
+        }
+        sendNotification(notification);
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                        // edtTitle.setText("");
+                        //   edtMessage.setText("");
+                        Toast.makeText(MainActivity.this, "onResponse ", Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+   private void GeraTokenFirebaseMessage() {
+
+        FirebaseInstanceId.getInstance().
+                getInstanceId().
+                addOnSuccessListener(MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess (InstanceIdResult instanceIdResult){
+                        String newToken = instanceIdResult.getToken();
+                        TOPIC = "/topics/"+ newToken;
+                        usuario.setToken(TOPIC);
+                        usuarioDataBase.Atualizar(usuario,MainActivity.this);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Falha ao acessar o Firebase Service Messaging", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
 }
 

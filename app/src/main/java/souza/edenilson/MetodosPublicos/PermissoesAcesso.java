@@ -27,17 +27,13 @@ public class PermissoesAcesso {
     }
 
     public void PermissaoGaleria(Activity activity){
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(activity,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
             } else {
                 // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+                ActivityCompat.requestPermissions(activity,  new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
             }
         } else {
             // Permission has already been granted
@@ -60,6 +56,20 @@ public class PermissoesAcesso {
             }
         } else {
             // Permission has already been granted
+        }
+    }
+
+    public void PermissaoNotifications(Activity activity){
+        int NOTIFICATION_PERMISSION_CODE = 123;
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED){
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_NOTIFICATION_POLICY)) {
+
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY}, NOTIFICATION_PERMISSION_CODE );
+
+            }
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY}, NOTIFICATION_PERMISSION_CODE );
         }
     }
 

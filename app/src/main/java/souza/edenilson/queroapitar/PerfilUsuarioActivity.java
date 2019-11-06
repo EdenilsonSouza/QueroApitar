@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -165,7 +166,7 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
         InicializaCampos();
         InicializaFirebase();
        // ConfiguraSeekBarDistancia();
-        ConfiguraRadioGroup();
+        ConfiguraRadioGroup(usuarioLogado);
         ConfiguraMapa();
 
         if(usuarioLogado != null){
@@ -270,23 +271,47 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
         radioFeminino.setChecked(false);
     }
 
-    private void ConfiguraRadioGroup(){
+    private void ConfiguraRadioGroup(Usuario usuario){
 
+        radioFeminino.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radioFeminino.setChecked(true);
+                usuarioLogado.setGenero("f");
+                usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
+            }
+        });
+
+        radioMasculino.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radioMasculino.setChecked(true);
+                usuarioLogado.setGenero("m");
+                usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
+            }
+        });
+
+/*
         radioGroupGenero.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+
                 if(checkedId == R.id.radioMasculino) {
                     radioMasculino.setChecked(true);
                     usuarioLogado.setGenero("m");
+
+
                 } else if(checkedId == R.id.radioFeminino) {
                     radioFeminino.setChecked(true);
                     usuarioLogado.setGenero("f");
                 }
-                usuarioDataBase.Atualizar(usuarioLogado);
-            }
 
+                usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
+            }
         });
+
+        */
     }
 
     private void InicializaObjetos(){
@@ -370,8 +395,6 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
                 //storageUsuarioRef.getName().equals(mountainImagesRef.getName());
                // Toast.makeText(PerfilUsuarioActivity.this, "Upload FEITO", Toast.LENGTH_LONG).show();
                 Intent i = new Intent(PerfilUsuarioActivity.this, PerfilUsuarioActivity.class);
-
-                return;
             }
         });
 
@@ -431,13 +454,13 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
             Bitmap bitmap = BitmapFactory.decodeFile(new File(picturePath).getPath());
             if(bitmap != null){
 
-                SalvarImagemFirebase(bitmap, usuarioLogado.getID() + "_" + nome_arquivo);
+               // SalvarImagemFirebase(bitmap, usuarioLogado.getID() + "_" + nome_arquivo);
             }
 
             imgFotoUsuario.setImageBitmap(BitmapFactory.decodeFile(picturePath));
             usuarioLogado.setUrlFoto(picturePath);
 
-            usuarioDataBase.Atualizar(usuarioLogado);
+            usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
 
         }
 
@@ -489,7 +512,7 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
                     txtEndereco.setText(enderecoCompleto);
 
                     usuarioLogado.setEndereco(endereco);
-                    usuarioDataBase.Atualizar(usuarioLogado);
+                    usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
                   //  CriaCirculoMapa(lat, lng);
 
                   //  String displayEndereco = enderecoCompleto == null || enderecoCompleto == "" ? "Posição atual" : enderecoCompleto;
@@ -556,7 +579,8 @@ public class PerfilUsuarioActivity extends AppCompatActivity implements
         txtDataNascimento.setText(dataSelecionada);
 
         usuarioLogado.setDataDeNascimento(dataBancoDeDados);
-        usuarioDataBase.Atualizar(usuarioLogado);
+        usuarioDataBase.Atualizar(usuarioLogado, PerfilUsuarioActivity.this);
+
     }
 
     // MAPA

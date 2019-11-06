@@ -1,18 +1,25 @@
 package souza.edenilson.DataBase;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,16 +28,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import souza.edenilson.MetodosPublicos.MetodosPublicos;
+import souza.edenilson.MetodosPublicos.MySingleton;
 import souza.edenilson.Model.Convite;
 import souza.edenilson.Model.Usuario;
+import souza.edenilson.Services.MyFirebaseMessagingService;
 import souza.edenilson.queroapitar.App;
 import souza.edenilson.queroapitar.ConvitesArbitroActivity;
 import souza.edenilson.queroapitar.ConvitesJogadorActivity;
+import souza.edenilson.queroapitar.MainActivity;
 import souza.edenilson.queroapitar.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -40,23 +57,27 @@ public class ConviteDataBase {
     private String ID;
     private String Local;
     FirebaseDatabase firebaseDatabase;
-    MetodosPublicos metodosPublicos;
+    public static MetodosPublicos metodosPublicos;
 
-    // TIPOS DE AÇÕES
-    //  jogadorConvidaArbitro  -
-    //  arbitroSeOferece  -
-    //  arbitroRecebeAvaliacao  -
-    //  arbitroRespondeJogador  -
+    // FIREBASE MESSAGING
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAA2YhL34U:APA91bEXmEhRThyQnfMFPpMbU_B6D8e9ZP4JJufgU-LGyPtR53n1QwiFebUvSsTugCUo3IC8SxeCpvAGiRqQ9XB138kTIETLqIDgcd-5H51KXpZxt_PyxSU-qeA5BTwubkqh9tw4V3C1";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+    String TOPIC;
 
     public ConviteDataBase() {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         metodosPublicos = new MetodosPublicos();
+
     }
 
     public void Salvar(Usuario usuarioLogado, Convite convite, Activity activity, String acao){
 
         App.setContext(activity);
+
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("convite");
         //databaseReference.child(convite.getId()).setValue(convite);
@@ -74,6 +95,9 @@ public class ConviteDataBase {
             @Override
             public void onSuccess(Void aVoid) {
 
+                GetTokenFirebaseMessage(activity, convite, usuarioLogado, acao);
+               // PreparaNotificacao(activity, convite, usuarioLogado, acao);
+                /*
                 if(acao.equals("jogadorConvidaArbitro")){
 
                     if(usuarioLogado.getID().equals(convite.getConvidado().getID())){
@@ -87,7 +111,7 @@ public class ConviteDataBase {
                         NotificacaoArbitroSeOferece(convite, activity);
                     }
                 }
-
+*/
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -98,6 +122,8 @@ public class ConviteDataBase {
     }
 
     public void Atualiza(Convite convite, Usuario usuarioLogado,  Activity activity, String acao){
+
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("convite").child(convite.getId());
 
@@ -118,6 +144,9 @@ public class ConviteDataBase {
 
                 if(databaseError == null){
 
+                    GetTokenFirebaseMessage(activity, convite, usuarioLogado, acao);
+                 //   PreparaNotificacao(activity, convite, usuarioLogado, acao);
+/*
                     if(acao.equals("arbitroSeOferece")){
 
                         if(convite.getRemetente().getID().equals(usuarioLogado.getID())) {
@@ -148,6 +177,9 @@ public class ConviteDataBase {
                             NotificacaoRespostaNegativaDoJogadorParaArbitro(convite, activity);
                         }
                     }
+*/
+
+
                 }
             }
         });
@@ -171,8 +203,115 @@ public class ConviteDataBase {
         this.ID = databaseReference.push().getKey();
     }
 
+    private void GetTokenFirebaseMessage(Activity activity, Convite convite, Usuario usuarioLogado, String acao) {
 
-    private void NotificacaoJogadorConvidaArbitro(Convite convite, Activity activity){
+        FirebaseInstanceId.getInstance().
+                getInstanceId().
+                addOnSuccessListener(activity,  new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess (InstanceIdResult instanceIdResult){
+                        String newToken = instanceIdResult.getToken();
+                        TOPIC = "/topics/"+ newToken;
+                        PreparaNotificacao(activity, convite, usuarioLogado, acao);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(activity, "Falha ao acessar o Firebase Service Messaging", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // AQUI ESTA OS METODOS PARA ENVIAR A NOTIFICACAO PARA OS DISPOSITIVOS
+    private void PreparaNotificacao(Activity activity, Convite convite,Usuario usuarioLogado,String acao) {
+        //TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
+        JSONObject notification = new JSONObject();
+        JSONObject notificationToken = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", "Titulo da Notificação");
+            notifcationBody.put("message", "Texto da Notificação");
+
+            notificationToken.put("token", TOPIC);
+
+            notification.put("to", TOPIC);
+            notification.put("header", notificationToken);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage());
+        }
+        sendNotification(notification, activity, convite, usuarioLogado, acao);
+    }
+
+    private void sendNotification(JSONObject notification, Activity activity, Convite convite, Usuario  usuarioLogado, String acao) {
+        App.setContext(activity);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+
+                        if(acao.equals("jogadorConvidaArbitro")) {
+
+                            //if (usuarioLogado.getID().equals(convite.getConvidado().getID())) {
+                                NotificacaoJogadorConvidaArbitro(convite, usuarioLogado,  activity, acao);
+                           // }
+
+                        }
+                        else if(acao.equals("arbitroSeOferece")){
+
+                           // if(convite.getRemetente().getID().equals(usuarioLogado.getID())) {
+                                NotificacaoArbitroSeOferece(convite, usuarioLogado, activity, acao);
+                           // }
+                        }
+                        else if(acao.equals("arbitroRespondeJogador")){
+
+                          //  if(convite.getRemetente().getID().equals(usuarioLogado.getID())) {
+                                NotificacaoRespostaArbitroParaJogador(convite, usuarioLogado,  activity, acao);
+                         //   }
+                        }
+                        else if(acao.equals("arbitroRecebeAvaliacao")){
+
+                         //   if(convite.getConvidado().getID().equals(usuarioLogado.getID())){
+                                NotificacaoArbitroRecebeAvaliacao(convite, usuarioLogado,  activity, acao);
+                          //  }
+                        }
+                        else if(acao.equals("DonoDaPartidaAceitouArbitro")){
+
+                          //  if(convite.getConvidado().getID().equals(usuarioLogado.getID())){
+                                NotificacaoRespostaDoJogadorParaArbitro(convite, usuarioLogado,  activity, acao);
+                         //   }
+                        }
+                        else if(acao.equals("DonoDaPartidaNaoAceitouArbitro")){
+
+                         //   if(convite.getConvidado().getID().equals(usuarioLogado.getID())){
+                                NotificacaoRespostaNegativaDoJogadorParaArbitro(convite,usuarioLogado, activity, acao);
+                          //  }
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                      //  Toast.makeText(MainActivity.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(App.getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void NotificacaoJogadorConvidaArbitro(Convite convite, Usuario usuarioLogado, Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -199,8 +338,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesArbitroActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -240,7 +381,7 @@ public class ConviteDataBase {
         nm.notify(id, notificacao.build());
     }
 
-    private void NotificacaoRespostaNegativaDoJogadorParaArbitro(Convite convite, Activity activity){
+    private void NotificacaoRespostaNegativaDoJogadorParaArbitro(Convite convite,  Usuario usuarioLogado, Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -268,8 +409,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesJogadorActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -309,7 +452,7 @@ public class ConviteDataBase {
         nm.notify(id, notificacao.build());
     }
 
-    private void NotificacaoRespostaDoJogadorParaArbitro(Convite convite, Activity activity){
+    private void NotificacaoRespostaDoJogadorParaArbitro(Convite convite, Usuario usuarioLogado,  Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -337,8 +480,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesJogadorActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -378,7 +523,7 @@ public class ConviteDataBase {
         nm.notify(id, notificacao.build());
     }
 
-    private void NotificacaoRespostaArbitroParaJogador(Convite convite, Activity activity){
+    private void NotificacaoRespostaArbitroParaJogador(Convite convite, Usuario usuarioLogado,  Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -416,8 +561,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesJogadorActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -458,7 +605,7 @@ public class ConviteDataBase {
     }
 
 
-    private void NotificacaoArbitroSeOferece(Convite convite, Activity activity){
+    public static void NotificacaoArbitroSeOferece(Convite convite, Usuario usuarioLogado,  Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -484,8 +631,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesJogadorActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -525,7 +674,7 @@ public class ConviteDataBase {
         nm.notify(id, notificacao.build());
     }
 
-    private void NotificacaoArbitroRecebeAvaliacao(Convite convite, Activity activity){
+    private void NotificacaoArbitroRecebeAvaliacao(Convite convite, Usuario usuarioLogado,  Activity activity, String acao){
 
         App.setContext(activity);
         final String NOTIFICATION_CHANNEL_ID = "10001";
@@ -552,8 +701,10 @@ public class ConviteDataBase {
         int SMALL_ICONE = R.drawable.logo4;
         int LARGE_ICONE = R.drawable.logo4;
 
-        Intent intent = new Intent(activity, ConvitesArbitroActivity.class);
+        Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("convite",convite);
+        intent.putExtra("usuarioLogado", usuarioLogado);
+        intent.putExtra("acao",acao);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);

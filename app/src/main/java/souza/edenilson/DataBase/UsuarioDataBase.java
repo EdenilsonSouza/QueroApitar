@@ -8,6 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.base.MoreObjects;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,11 +19,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import souza.edenilson.Model.Convite;
 import souza.edenilson.Model.Usuario;
+import souza.edenilson.queroapitar.LoginActivity;
+import souza.edenilson.queroapitar.MainActivity;
 import souza.edenilson.queroapitar.PartidaActivity;
 
 public class UsuarioDataBase {
@@ -30,6 +37,7 @@ public class UsuarioDataBase {
     private String Local;
     FirebaseUser currentUser;
     FirebaseAuth mAuth;
+    String TOPIC;
 
     public UsuarioDataBase() {
     }
@@ -47,7 +55,7 @@ public class UsuarioDataBase {
         databaseReference.child("usuario").child(getID()).removeValue();
     }
 
-    public void Atualizar(Usuario usuarioLogado){
+    public void Atualizar(Usuario usuarioLogado, Activity activity){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("usuario").child(usuarioLogado.getID());
 
@@ -69,19 +77,22 @@ public class UsuarioDataBase {
         result.put("quantidadePartidas", usuarioLogado.getQuantidadePartidas());
         result.put("avaliacaoGeral", usuarioLogado.getAvaliacaoGeral());
         result.put("listaDeEsportes", usuarioLogado.getListaDeEsportes());
+        result.put("token", usuarioLogado.getToken());
+
         databaseReference.updateChildren(result);
 
-        /*
-        databaseReference.updateChildren(taskMap, new DatabaseReference.CompletionListener() {
+
+        databaseReference.updateChildren(result, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 
                 if(databaseError == null){
 
                 }
+
             }
         });
-        */
+
     }
 
     @Exclude
@@ -98,5 +109,7 @@ public class UsuarioDataBase {
     public Usuario GetUsuario(Usuario usuario){
         return usuario;
     }
+
+
 
 }

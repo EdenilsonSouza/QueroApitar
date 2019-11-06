@@ -57,6 +57,7 @@ public class ConvitesArbitroActivity extends AppCompatActivity implements Convit
 
     // OBJETOS
     Usuario usuarioLogado;
+    Convite convite;
     MetodosPublicos metodosPublicos;
     PermissoesAcesso permissoesAcesso;
     PartidaTemp partidaTemp;
@@ -95,8 +96,7 @@ public class ConvitesArbitroActivity extends AppCompatActivity implements Convit
 
         Intent intent = getIntent();
         usuarioLogado =  (Usuario)intent.getSerializableExtra("usuarioLogado");
-
-        Convite novo_convite =  (Convite)getIntent().getSerializableExtra("convite");
+        convite =  (Convite)getIntent().getSerializableExtra("convite");
 
         InicializaCampos();
         InicializaFirebase();

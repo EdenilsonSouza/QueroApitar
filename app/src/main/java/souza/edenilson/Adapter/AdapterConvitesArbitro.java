@@ -162,7 +162,7 @@ public class AdapterConvitesArbitro extends RecyclerView.Adapter<AdapterConvites
 
                         int partidasApitadas = convite.getConvidado().getQuantidadePartidas();
                         usuarioLogado.setQuantidadePartidas(partidasApitadas + 1);
-                        usuarioDataBase.Atualizar(usuarioLogado); // atualiza a quantidade de partidas apitadas.
+                        usuarioDataBase.Atualizar(usuarioLogado, activity); // atualiza a quantidade de partidas apitadas.
 
                         Partida partida = convite.getPartida();
                         partida.setStatusConvite(1);

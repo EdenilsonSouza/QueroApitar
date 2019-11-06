@@ -7,7 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="menu_minhas_partidas">Minhas Partidas</string>
     <string name="title_activity_partida">Partida</string>
-    <string name="msg_notificacao">Você recebeu um novo convite.</string>
+    <string name="msg_notificacao">Você recebeu uma nova Mensagem.</string>
 
     <string name="nome_usuario">Nome do Usuário</string>
     <string name="email_usuario">E-mail do Usuário</string>

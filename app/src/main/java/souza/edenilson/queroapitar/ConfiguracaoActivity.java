@@ -298,7 +298,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
                 }
 
                 usuarioLogado.setListaDeEsportes(listaDeEsportes);
-                usuarioDataBase.Atualizar(usuarioLogado);
+                usuarioDataBase.Atualizar(usuarioLogado, ConfiguracaoActivity.this);
 
             Toast.makeText(this, "Configuração salva com sucesso.", Toast.LENGTH_LONG).show();
 
@@ -409,7 +409,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
                 usuarioLogado.setDistanciaDisponivel(progressChangedValue);
-                usuarioDataBase.Atualizar(usuarioLogado);
+                usuarioDataBase.Atualizar(usuarioLogado, ConfiguracaoActivity.this);
 
                 txtDistanciaEscolida.setText("Você escolheu esta distância: " + String.valueOf(progressChangedValue) + " km");
 

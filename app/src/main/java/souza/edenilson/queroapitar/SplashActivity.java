@@ -1,5 +1,6 @@
 package souza.edenilson.queroapitar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -112,18 +113,19 @@ public class SplashActivity extends AppCompatActivity {
         final String userEmail = user.getEmail();
 
         databaseReference =  firebaseDatabase.getReference("usuario");
-        databaseReference.child(userID).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             String email = "";
-            String senha ="";
+            String senha = "";
             String nome = "";
             String sobrenome = "";
             int tipo;
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 String key = dataSnapshot.getKey(); // pega a chave do OBJETO Usuario
                 if(dataSnapshot.exists()){
+
                     Usuario usuarioBanco = dataSnapshot.getValue(Usuario.class);
                     String mail = usuarioBanco.getEmail();
                     if(dataSnapshot.exists() && key.equals(userID)&& userEmail.equals(mail)){
@@ -133,7 +135,6 @@ public class SplashActivity extends AppCompatActivity {
                         senha = dataSnapshot.getValue(Usuario.class).getSenha();
                         nome = dataSnapshot.getValue(Usuario.class).getNome();
                         sobrenome = dataSnapshot.getValue(Usuario.class).getSobreNome();
-
 
                         usuarioBanco = dataSnapshot.getValue(Usuario.class);
                         usuarioBanco.setID(key);
@@ -151,18 +152,14 @@ public class SplashActivity extends AppCompatActivity {
                     Intent intent = new Intent(SplashActivity.this, CriarContaActivity.class);
                     startActivity(intent);
                 }
-
-
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(SplashActivity.this, "Usuário não localizado. " + metodosPublicos.GetMensagemDeErro(databaseError.getMessage()), Toast.LENGTH_LONG).show();
-                usuario = null;
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
-        //return usuario;
     }
 
 

@@ -97,8 +97,7 @@ public class ConvitesJogadorActivity extends AppCompatActivity implements Convit
 
         Intent intent = getIntent();
         usuarioLogado =  (Usuario)intent.getSerializableExtra("usuarioLogado");
-
-        Convite novo_convite =  (Convite)getIntent().getSerializableExtra("convite");
+        convite =  (Convite)getIntent().getSerializableExtra("convite");
 
         InicializaCampos();
         InicializaFirebase();
@@ -253,7 +252,7 @@ public class ConvitesJogadorActivity extends AppCompatActivity implements Convit
 
                 if(avaliacao > 5.0) avaliacao = 5.0;
                 arbitro.setAvaliacaoGeral(avaliacao);
-                usuarioDataBase.Atualizar(arbitro);
+                usuarioDataBase.Atualizar(arbitro, ConvitesJogadorActivity.this);
 
                 Partida p = convite.getPartida();
                 p.setStatusConvite(7);

@@ -13,13 +13,30 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,12 +44,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import souza.edenilson.Model.Convite;
 import souza.edenilson.Model.Endereco;
 import souza.edenilson.Model.Usuario;
 import souza.edenilson.Receiver.InternetReceiver;
 import souza.edenilson.Services.AccessInternetService;
 import souza.edenilson.queroapitar.App;
 import souza.edenilson.queroapitar.LoginActivity;
+import souza.edenilson.queroapitar.MainActivity;
 import souza.edenilson.queroapitar.R;
 import souza.edenilson.queroapitar.SplashActivity;
 
@@ -43,17 +62,46 @@ public class MetodosPublicos {
     private static final int PLAY_SERVICE_REQUEST = 7002;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
+
     public MetodosPublicos() { }
+
+    public String GetChaveGoogle(){
+        ApplicationInfo app = App.getContext().getApplicationInfo();
+        Bundle bundle = app.metaData;
+
+        if(bundle == null){
+            return "AIzaSyCkcZQnmrb6nIMjV8fvnO0DIbOBcmI29-I";
+        }else{
+            return bundle.getString("com.google.android.geo.API_KEY");
+        }
+    }
+
+    public String GetChaveFirebaseMessage(){
+        return  "AAAA2YhL34U:APA91bEXmEhRThyQnfMFPpMbU_B6D8e9ZP4JJufgU-LGyPtR53n1QwiFebUvSsTugCUo3IC8SxeCpvAGiRqQ9XB138kTIETLqIDgcd-5H51KXpZxt_PyxSU-qeA5BTwubkqh9tw4V3C1";
+    }
 
     public Intent IndicarAmigos(){
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         String texto = "Ola como vai? você recebeu uma indicação para conhecer o APP Quero Apitar," +
                 " precisa de Árbitro para tua partida né? que tal baixar o APP e encontrar um bom árbitro para essa partida, e se preocupar somente em jogar, entra nesse link e boa partida " +
-                " www.netflix.com/br/Login";
+                " www.queroapitar.com.br";
         sendIntent.putExtra(Intent.EXTRA_TEXT, texto);
         sendIntent.setType("text/plain");
         return sendIntent;
+    }
+
+    public List<String> GetListaDeAcoes(){
+
+        List<String> listaDeAcoes = new ArrayList<>();
+        listaDeAcoes.add("jogadorConvidaArbitro");
+        listaDeAcoes.add("arbitroSeOferece");
+        listaDeAcoes.add("arbitroRespondeJogador");
+        listaDeAcoes.add("arbitroRecebeAvaliacao");
+        listaDeAcoes.add("DonoDaPartidaAceitouArbitro");
+        listaDeAcoes.add("DonoDaPartidaNaoAceitouArbitro");
+
+        return listaDeAcoes;
     }
 
     public String GetStatusConvite(int status){
@@ -80,16 +128,6 @@ public class MetodosPublicos {
         return statusConvite;
     }
 
-    public String GetChaveGoogle(){
-        ApplicationInfo app = App.getContext().getApplicationInfo();
-        Bundle bundle = app.metaData;
-
-        if(bundle == null){
-            return "AIzaSyCkcZQnmrb6nIMjV8fvnO0DIbOBcmI29-I";
-        }else{
-            return bundle.getString("com.google.android.geo.API_KEY");
-        }
-    }
 
     public Map<Integer, String> GetEsporteColetivo(){
 
@@ -559,64 +597,6 @@ public class MetodosPublicos {
             }
         });
         builder.show();
-    }
-
-    public void PopulaIconeAvaliação(List<TextView> ratings, double avaliacao){
-
-
-        for(int x = 1; x < ratings.size(); x++){
-            TextView rating = ratings.get(x);
-
-            if(avaliacao == 1){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_total_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-        }
-
-
-        for (TextView rating : ratings) {
-
-            if(avaliacao == 1){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_total_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-            if(avaliacao == 2){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_vazia_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-            if(avaliacao == 3){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_metade_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-            if(avaliacao == 4){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_metade_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-            if(avaliacao == 5){
-                rating.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_avaliacao_metade_24px, //left
-                        0, //top
-                        0, //right
-                        0);//bottom
-            }
-
-        }
-
     }
 
 

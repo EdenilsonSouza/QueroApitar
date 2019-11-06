@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtNomeAPP"
             android:layout_marginTop="16dp"
-            android:text="Versão 002.19"
             android:textAlignment="center"
             android:textColor="#233CC7"
             android:textSize="18sp" />
@@ -66,7 +65,7 @@
                         android:drawableLeft="@drawable/ic_twotone_copyright_24px" />
 
                     <TextView
-                        android:id="@+id/txtLicensa"
+                        android:id="@+id/txtTextoLicensa"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"

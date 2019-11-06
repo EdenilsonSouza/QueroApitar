@@ -709,9 +709,6 @@ public class PartidaActivity extends AppCompatActivity implements
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap = googleMap;
 
-        // buscar no banco o ENDEREÇO do USUARIO, se não encontrar dai chama o GetLastLocation();
-          //GetEnderecoUsuarioLogado(usuario);
-
         // PEGA O ENDEREÇO ATUAL, SE NAO ESTIVER CADASTRADO NO BANCO DE DADOS
         GetLastLocation();
 
@@ -864,7 +861,6 @@ public class PartidaActivity extends AppCompatActivity implements
     public void SalvarPartidaClick(View view) {
 
         if(ValidaCampos()){
-
             String dataDaPartida = txtDiaDataPartida.getText().toString() +"-"+ metodosPublicos.ConverteNumeroMES(txtMesDataPartida.getText().toString().toLowerCase())+"-"+txtAnoDataPartida.getText().toString();
             String horaDaPartida = txtDisplayHoraPartida.getText().toString();
 
@@ -909,7 +905,6 @@ public class PartidaActivity extends AppCompatActivity implements
                             Intent intent = new Intent(PartidaActivity.this, MainActivity.class);
                             intent.putExtra("usuarioLogado", usuario);
                             startActivity(intent);
-
                         }
                     }
                 }

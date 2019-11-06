@@ -3,6 +3,7 @@ package souza.edenilson.queroapitar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,6 +72,8 @@ public class CriarContaActivity extends AppCompatActivity {
     InternetReceiver internetReceiver;
     MetodosPublicos metodosPublicos;
     UsuarioDataBase usuarioDataBase;
+
+    String TOPIC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,8 +287,10 @@ public class CriarContaActivity extends AppCompatActivity {
                             boolean Disponivel = true;
                             String UserName = Nome;
 
+                            GeraTokenFirebaseMessage();
+
                             usuario = new Usuario(uid,Nome, SobreNome, Email,  Senha, UserName, "",
-                                    "", "", DataDeCadastro,tipoDeUsuarioLogado, null, 0, Disponivel, 0, 0.0, null);
+                                    "", "", DataDeCadastro,tipoDeUsuarioLogado, null, 0, Disponivel, 0, 0.0, null, TOPIC);
                             usuarioDataBase.Salvar(usuario);
 
                             LimparCampos();
@@ -293,19 +300,7 @@ public class CriarContaActivity extends AppCompatActivity {
 
                         } else {
 
-                            boolean semInternet = verificaSinalInternet();
-                            String msg = "";
-                            if(semInternet){
-                                msg = GetMensagemDeErro(task.getException().getMessage());
-                            }
-                            else{
-                                msg = "Sem sinal de internet, conecte-se novamente.";
-                            }
-
-
-                            Toast.makeText(CriarContaActivity.this, "Falha na autenticação. " + msg,
-                                    Toast.LENGTH_LONG).show();
-                            // updateUI(null);
+                            metodosPublicos.TemInternet(App.getContext(), CriarContaActivity.this, LoginActivity.class);
                         }
 
                         // ...
@@ -315,29 +310,21 @@ public class CriarContaActivity extends AppCompatActivity {
         return logado;
     }
 
-    private String GetMensagemDeErro(String erro){
+    private void GeraTokenFirebaseMessage() {
 
-        String mensagem = null;
-
-        if(erro == "The password is invalid or the user does not have a password."){
-            mensagem = "Senha incorreta, ou usuário não registrado.";
-        }
-        else if(erro == "There is no user record corresponding to this identifier. The user may have been deleted."){
-            mensagem = "Não há registro de usuário correspondente a esse e-mail.";
-        }
-        else if(erro == "The email address is already in use by another account."){
-            mensagem = "O endereço de e-mail já está sendo usado por outra conta.";
-        }
-
-        return mensagem;
-
+        FirebaseInstanceId.getInstance().
+                getInstanceId().
+                addOnSuccessListener(CriarContaActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess (InstanceIdResult instanceIdResult){
+                        String newToken = instanceIdResult.getToken();
+                        TOPIC = "/topics/"+ newToken;
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CriarContaActivity.this, "Falha ao acessar o Firebase Service Messaging", Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
-    private boolean verificaSinalInternet(){
-        internetReceiver = new InternetReceiver();
-        return internetReceiver.verificaInternet(App.getContext());
-        // chama o service que verifica se há Conexão com a Internet
-        //App.getContext().startService(new Intent(App.getContext(), AccessInternetService.class));
-    }
-
 }
